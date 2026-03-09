@@ -3,20 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Let Down — Radiohead</title>
+  <title>Let Down // Duel Dimension</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;700;900&family=Playfair+Display:ital,wght@1,500;1,700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@300;400;600;800&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --bg:#04050a;
-      --bg2:#0b1020;
-      --text:#f5f7ff;
-      --muted:rgba(255,255,255,.58);
-      --line:rgba(255,255,255,.10);
-      --accent:#9ed0ff;
-      --accent-2:#72a9ff;
-      --glass:rgba(255,255,255,.06);
+      --bg:#060712;
+      --bg2:#0f1430;
+      --gold:#e8c36a;
+      --gold-2:#f6df9a;
+      --blue:#72b7ff;
+      --violet:#8f6bff;
+      --text:#f6f1df;
+      --muted:rgba(246,241,223,.68);
+      --panel:rgba(13,16,35,.65);
+      --line:rgba(232,195,106,.22);
+      --shadow:0 25px 90px rgba(0,0,0,.45);
     }
 
     *{
@@ -29,12 +32,13 @@
       width:100%;
       height:100%;
       overflow:hidden;
-      font-family:'Inter',sans-serif;
       background:
-        radial-gradient(circle at 20% 20%, rgba(114,169,255,.10), transparent 20%),
-        radial-gradient(circle at 80% 30%, rgba(158,208,255,.07), transparent 25%),
-        linear-gradient(180deg, var(--bg2), var(--bg));
+        radial-gradient(circle at 20% 15%, rgba(114,183,255,.10), transparent 22%),
+        radial-gradient(circle at 80% 20%, rgba(143,107,255,.11), transparent 24%),
+        radial-gradient(circle at 50% 80%, rgba(232,195,106,.08), transparent 30%),
+        linear-gradient(180deg, #0d1025 0%, #070912 50%, #04050b 100%);
       color:var(--text);
+      font-family:'Inter',sans-serif;
     }
 
     body{
@@ -47,6 +51,11 @@
       z-index:0;
     }
 
+    .stars,
+    .portal{
+      pointer-events:none;
+    }
+
     .grain,
     .vignette{
       position:fixed;
@@ -56,36 +65,70 @@
 
     .grain{
       z-index:1;
-      opacity:.04;
-      background-image: radial-gradient(circle, rgba(255,255,255,.5) .7px, transparent .8px);
-      background-size:8px 8px;
+      opacity:.035;
+      background-image:radial-gradient(circle, rgba(255,255,255,.8) .7px, transparent .8px);
+      background-size:9px 9px;
     }
 
     .vignette{
       z-index:2;
-      background:radial-gradient(circle, transparent 35%, rgba(0,0,0,.55) 100%);
+      background:
+        radial-gradient(circle, transparent 35%, rgba(0,0,0,.60) 100%);
+    }
+
+    .frame{
+      position:fixed;
+      inset:16px;
+      border:1px solid rgba(232,195,106,.12);
+      z-index:3;
+      pointer-events:none;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
+    }
+
+    .frame::before,
+    .frame::after{
+      content:"";
+      position:absolute;
+      width:120px;
+      height:120px;
+      border:2px solid rgba(232,195,106,.28);
+    }
+
+    .frame::before{
+      top:-2px;
+      left:-2px;
+      border-right:none;
+      border-bottom:none;
+    }
+
+    .frame::after{
+      right:-2px;
+      bottom:-2px;
+      border-left:none;
+      border-top:none;
     }
 
     .hud{
       position:fixed;
-      z-index:5;
-      font-family:'JetBrains Mono',monospace;
-      font-size:10px;
-      letter-spacing:2px;
-      text-transform:uppercase;
-      color:rgba(158,208,255,.7);
+      z-index:6;
+      font-family:'Orbitron',sans-serif;
+      font-size:11px;
       line-height:1.8;
+      letter-spacing:2px;
+      color:rgba(246,223,154,.76);
+      text-transform:uppercase;
       user-select:none;
+      text-shadow:0 0 18px rgba(232,195,106,.18);
     }
 
     .hud.left{
-      top:22px;
-      left:22px;
+      top:26px;
+      left:28px;
     }
 
     .hud.right{
-      right:22px;
-      bottom:22px;
+      right:28px;
+      bottom:26px;
       text-align:right;
     }
 
@@ -97,19 +140,30 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:20px;
+      padding:22px;
     }
 
     .panel{
-      width:min(1100px,95vw);
-      height:min(760px,92vh);
+      width:min(1180px, 96vw);
+      height:min(780px, 93vh);
       position:relative;
-      border-radius:30px;
       overflow:hidden;
-      border:1px solid var(--line);
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      backdrop-filter:blur(18px);
-      box-shadow:0 20px 80px rgba(0,0,0,.45);
+      border-radius:30px;
+      background:
+        linear-gradient(180deg, rgba(18,22,48,.78), rgba(8,10,22,.78));
+      border:1px solid rgba(232,195,106,.22);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(16px);
+    }
+
+    .panel::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(135deg, rgba(246,223,154,.06), transparent 24%),
+        linear-gradient(315deg, rgba(114,183,255,.08), transparent 28%);
+      pointer-events:none;
     }
 
     .top{
@@ -117,17 +171,19 @@
       top:0;
       left:0;
       right:0;
+      padding:28px 30px 0 30px;
       z-index:4;
       display:flex;
       justify-content:space-between;
       align-items:flex-start;
       gap:20px;
-      padding:28px 28px 0 28px;
     }
 
     .title small{
       display:block;
-      color:var(--muted);
+      font-family:'Orbitron',sans-serif;
+      color:var(--gold-2);
+      opacity:.72;
       font-size:11px;
       text-transform:uppercase;
       letter-spacing:2px;
@@ -135,46 +191,50 @@
     }
 
     .title h1{
-      font-size:clamp(2rem,4vw,3.4rem);
-      letter-spacing:-.05em;
-      font-weight:900;
+      font-family:'Cinzel',serif;
+      font-size:clamp(2.2rem,4vw,4rem);
+      line-height:1;
+      letter-spacing:.02em;
+      text-shadow:0 0 24px rgba(232,195,106,.14);
     }
 
     .title p{
-      margin-top:8px;
+      margin-top:10px;
       color:var(--muted);
-      font-size:.95rem;
+      max-width:620px;
+      line-height:1.55;
     }
 
-    .progress-wrap{
-      width:min(300px,38vw);
-      display:flex;
-      flex-direction:column;
-      align-items:flex-end;
-      gap:8px;
-      padding-top:8px;
+    .status-box{
+      min-width:260px;
+      max-width:330px;
+      padding:16px 18px;
+      border:1px solid rgba(232,195,106,.18);
+      border-radius:18px;
+      background:rgba(255,255,255,.03);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
     }
 
-    .time{
-      font-family:'JetBrains Mono',monospace;
+    .status-box .label{
+      font-family:'Orbitron',sans-serif;
       font-size:11px;
+      letter-spacing:2px;
+      color:var(--gold-2);
+      opacity:.72;
+      margin-bottom:12px;
+      text-transform:uppercase;
+    }
+
+    .status-grid{
+      display:grid;
+      gap:8px;
+      font-size:.92rem;
       color:var(--muted);
     }
 
-    .progress{
-      width:100%;
-      height:8px;
-      border-radius:999px;
-      overflow:hidden;
-      background:rgba(255,255,255,.08);
-    }
-
-    .progress-bar{
-      width:0%;
-      height:100%;
-      border-radius:999px;
-      background:linear-gradient(90deg, var(--accent-2), var(--accent));
-      box-shadow:0 0 20px rgba(158,208,255,.45);
+    .status-grid strong{
+      color:var(--text);
+      font-weight:700;
     }
 
     .center{
@@ -184,25 +244,55 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:120px 40px 130px;
+      padding:130px 40px 150px;
+    }
+
+    .duel-circle{
+      position:absolute;
+      width:min(55vw, 620px);
+      aspect-ratio:1;
+      border-radius:50%;
+      border:1px solid rgba(232,195,106,.18);
+      box-shadow:
+        0 0 0 18px rgba(255,255,255,.015),
+        0 0 90px rgba(114,183,255,.08),
+        inset 0 0 45px rgba(143,107,255,.08);
+      opacity:.82;
+      pointer-events:none;
+    }
+
+    .duel-circle::before,
+    .duel-circle::after{
+      content:"";
+      position:absolute;
+      inset:8%;
+      border-radius:50%;
+      border:1px solid rgba(114,183,255,.18);
+    }
+
+    .duel-circle::after{
+      inset:22%;
+      border-color:rgba(232,195,106,.15);
     }
 
     .orb{
       position:absolute;
-      width:380px;
-      height:380px;
+      width:340px;
+      height:340px;
       border-radius:50%;
-      background:radial-gradient(circle, rgba(158,208,255,.18), transparent 65%);
-      filter:blur(20px);
-      opacity:.55;
+      background:
+        radial-gradient(circle, rgba(114,183,255,.20), rgba(143,107,255,.14) 35%, rgba(0,0,0,0) 68%);
+      filter:blur(18px);
+      opacity:.65;
+      transform:scale(1);
       transition:transform .12s linear, opacity .12s linear;
       pointer-events:none;
     }
 
     .lyrics-stage{
       position:relative;
-      width:min(920px,95%);
-      min-height:240px;
+      width:min(920px, 95%);
+      min-height:250px;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -212,62 +302,75 @@
     .line{
       position:absolute;
       width:100%;
-      padding:0 12px;
-      font-size:clamp(2rem,5.3vw,5rem);
+      padding:0 18px;
+      font-family:'Cinzel',serif;
+      font-size:clamp(2rem,5.1vw,5rem);
       line-height:1.08;
-      letter-spacing:-.04em;
-      font-weight:200;
+      letter-spacing:.02em;
+      color:var(--text);
       opacity:0;
-      transform:translateY(35px) scale(.96);
+      transform:translateY(38px) scale(.94);
       filter:blur(14px);
       transition:
-        opacity .9s ease,
-        transform .9s cubic-bezier(.19,1,.22,1),
-        filter .9s ease,
-        text-shadow .5s ease;
+        opacity .85s ease,
+        transform .85s cubic-bezier(.19,1,.22,1),
+        filter .85s ease,
+        text-shadow .4s ease;
       text-wrap:balance;
       pointer-events:none;
+      text-shadow:
+        0 0 10px rgba(246,241,223,.08),
+        0 0 22px rgba(232,195,106,.08);
     }
 
     .line.active{
       opacity:1;
       transform:translateY(0) scale(1);
       filter:blur(0);
-      text-shadow:0 0 18px rgba(255,255,255,.08);
     }
 
     .line.exit{
       opacity:0;
-      transform:translateY(-18px) scale(1.02);
+      transform:translateY(-18px) scale(1.03);
       filter:blur(8px);
     }
 
     .line.chorus{
-      font-family:'Playfair Display',serif;
-      font-style:italic;
-      color:var(--accent);
+      color:var(--gold-2);
       text-shadow:
-        0 0 20px rgba(158,208,255,.22),
-        0 0 45px rgba(158,208,255,.14);
+        0 0 12px rgba(246,223,154,.22),
+        0 0 36px rgba(232,195,106,.20),
+        0 0 60px rgba(114,183,255,.12);
     }
 
     .line.emphasis{
-      transform:translateY(0) scale(1.04);
-      text-shadow:
-        0 0 30px rgba(158,208,255,.18),
-        0 0 60px rgba(158,208,255,.10);
+      transform:translateY(0) scale(1.06);
+    }
+
+    .line.shock{
+      animation:shock .22s linear 1;
+    }
+
+    @keyframes shock{
+      0%{ transform:translateX(0) scale(1.06); }
+      25%{ transform:translateX(-2px) scale(1.065); }
+      50%{ transform:translateX(2px) scale(1.07); }
+      75%{ transform:translateX(-1px) scale(1.065); }
+      100%{ transform:translateX(0) scale(1.06); }
     }
 
     .intro{
       position:absolute;
       inset:0;
-      z-index:6;
+      z-index:7;
       display:flex;
       flex-direction:column;
       align-items:center;
       justify-content:center;
       gap:18px;
-      background:linear-gradient(180deg, rgba(4,5,10,.55), rgba(4,5,10,.28));
+      background:
+        radial-gradient(circle at center, rgba(114,183,255,.10), transparent 35%),
+        linear-gradient(180deg, rgba(8,10,22,.70), rgba(4,5,11,.50));
       backdrop-filter:blur(10px);
       transition:opacity .8s ease, visibility .8s ease;
     }
@@ -279,43 +382,50 @@
     }
 
     .intro .mini{
-      font-family:'JetBrains Mono',monospace;
+      font-family:'Orbitron',sans-serif;
       font-size:11px;
       letter-spacing:2px;
       text-transform:uppercase;
-      color:var(--muted);
+      color:var(--gold-2);
+      opacity:.78;
     }
 
     .intro h2{
-      font-size:clamp(2.2rem,5vw,4.8rem);
-      font-weight:900;
-      letter-spacing:-.05em;
+      font-family:'Cinzel',serif;
+      font-size:clamp(2.6rem,6vw,5.4rem);
+      line-height:1;
+      text-shadow:0 0 28px rgba(232,195,106,.12);
     }
 
     .intro p{
-      max-width:560px;
+      max-width:620px;
       text-align:center;
-      color:var(--muted);
       line-height:1.7;
+      color:var(--muted);
       padding:0 16px;
     }
 
     .play-btn{
-      width:82px;
-      height:82px;
+      width:88px;
+      height:88px;
       border-radius:50%;
-      border:none;
+      border:1px solid rgba(232,195,106,.24);
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.12), rgba(255,255,255,.03));
+      color:var(--gold-2);
       cursor:pointer;
-      color:white;
-      font-size:24px;
-      background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.05));
-      box-shadow:0 12px 40px rgba(0,0,0,.35);
+      font-size:28px;
+      box-shadow:
+        0 18px 50px rgba(0,0,0,.35),
+        0 0 30px rgba(232,195,106,.10);
       transition:transform .2s ease, box-shadow .2s ease;
     }
 
     .play-btn:hover{
       transform:scale(1.05);
-      box-shadow:0 16px 50px rgba(0,0,0,.42), 0 0 25px rgba(158,208,255,.14);
+      box-shadow:
+        0 18px 60px rgba(0,0,0,.40),
+        0 0 45px rgba(232,195,106,.16);
     }
 
     .bottom{
@@ -324,86 +434,162 @@
       right:0;
       bottom:0;
       z-index:4;
+      padding:0 30px 28px 30px;
       display:flex;
       justify-content:space-between;
-      align-items:center;
+      align-items:end;
       gap:18px;
       flex-wrap:wrap;
-      padding:0 28px 28px 28px;
     }
 
     .track{
       display:flex;
       flex-direction:column;
-      gap:5px;
+      gap:6px;
     }
 
     .track strong{
-      font-size:1rem;
+      font-family:'Cinzel',serif;
+      font-size:1.1rem;
+      color:var(--gold-2);
     }
 
     .track span{
       color:var(--muted);
-      font-size:.9rem;
+      font-size:.92rem;
     }
 
     .controls{
       flex:1;
-      min-width:260px;
+      min-width:300px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .buttons{
       display:flex;
       align-items:center;
-      gap:14px;
+      gap:12px;
     }
 
     .toggle{
-      width:54px;
-      height:54px;
+      width:58px;
+      height:58px;
       border-radius:50%;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.07);
-      color:white;
+      border:1px solid rgba(232,195,106,.18);
+      background:rgba(255,255,255,.05);
+      color:var(--gold-2);
       font-size:18px;
       cursor:pointer;
+    }
+
+    .action{
+      padding:11px 14px;
+      border-radius:14px;
+      border:1px solid rgba(232,195,106,.14);
+      background:rgba(255,255,255,.04);
+      color:var(--muted);
+      font-size:.88rem;
+    }
+
+    .progress-block{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .time{
+      font-family:'Orbitron',sans-serif;
+      font-size:11px;
+      letter-spacing:1px;
+      color:var(--gold-2);
+      opacity:.78;
+      min-width:104px;
+      text-align:right;
     }
 
     .seek{
       -webkit-appearance:none;
       appearance:none;
       width:100%;
-      height:6px;
+      height:8px;
       border-radius:999px;
-      background:rgba(255,255,255,.12);
+      background:rgba(255,255,255,.10);
       outline:none;
       cursor:pointer;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
     }
 
     .seek::-webkit-slider-thumb{
       -webkit-appearance:none;
       appearance:none;
-      width:14px;
-      height:14px;
+      width:16px;
+      height:16px;
       border-radius:50%;
-      background:#fff;
-      box-shadow:0 0 0 4px rgba(158,208,255,.18);
+      background:var(--gold-2);
+      box-shadow:0 0 0 5px rgba(232,195,106,.16);
+    }
+
+    .sync-help{
+      position:absolute;
+      top:112px;
+      right:30px;
+      z-index:4;
+      padding:14px 16px;
+      width:min(320px, 40vw);
+      border-radius:18px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(232,195,106,.14);
+      color:var(--muted);
+      font-size:.88rem;
+      line-height:1.65;
+    }
+
+    .sync-help strong{
+      color:var(--gold-2);
+    }
+
+    .hidden-lyrics .line{
+      display:none;
     }
 
     audio{
       display:none;
     }
 
-    @media (max-width:768px){
+    @media (max-width: 900px){
+      .top{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .sync-help{
+        top:auto;
+        right:auto;
+        left:20px;
+        bottom:110px;
+        width:calc(100% - 40px);
+      }
+    }
+
+    @media (max-width: 768px){
       .hud{
         font-size:8px;
       }
 
       .hud.left{
         top:14px;
-        left:14px;
+        left:16px;
       }
 
       .hud.right{
-        right:14px;
+        right:16px;
         bottom:14px;
+      }
+
+      .frame{
+        inset:10px;
       }
 
       .panel{
@@ -411,122 +597,149 @@
       }
 
       .top{
-        flex-direction:column;
-        align-items:flex-start;
         padding:20px 20px 0 20px;
       }
 
-      .progress-wrap{
-        width:100%;
-        align-items:flex-start;
-      }
-
       .center{
-        padding:140px 20px 140px;
+        padding:150px 18px 168px;
       }
 
       .bottom{
         padding:0 20px 20px 20px;
-        flex-direction:column;
         align-items:stretch;
       }
 
+      .controls{
+        min-width:0;
+      }
+
+      .buttons{
+        flex-wrap:wrap;
+      }
+
+      .duel-circle{
+        width:82vw;
+      }
+
       .orb{
-        width:260px;
-        height:260px;
+        width:250px;
+        height:250px;
       }
     }
   </style>
 </head>
 <body>
-  <canvas id="bg"></canvas>
+  <canvas id="stars"></canvas>
+  <canvas id="portal"></canvas>
   <div class="grain"></div>
   <div class="vignette"></div>
+  <div class="frame"></div>
 
   <div class="hud left">
-    SIGNAL_ID: OK_COMPUTER<br>
-    TRACK_05: LET_DOWN<br>
-    VISUAL_MODE: DREAMLIKE
+    DUEL FIELD: ACTIVE<br>
+    TRACK: LET DOWN<br>
+    MODE: REMASTERED
   </div>
 
   <div class="hud right">
-    LYRIC_SYNC: ACTIVE<br>
-    AUDIO_REACTIVE: ON
+    SPACE = PLAY/PAUSE<br>
+    W/S = SYNC<br>
+    D = RESET OFFSET
   </div>
 
   <div class="app">
-    <div class="panel">
+    <div class="panel" id="panel">
       <div class="top">
         <div class="title">
-          <small>Radiohead Experience</small>
+          <small>Yu-Gi-Oh Inspired Experience</small>
           <h1>Let Down</h1>
-          <p>Letras sincronizadas com efeitos suaves e visual mais bonito.</p>
+          <p>
+            Estrutura nova, mais dramática, com visual de arena mágica e ajuste fino de sincronia no teclado.
+          </p>
         </div>
 
-        <div class="progress-wrap">
-          <div class="time" id="time">00:00 / 00:00</div>
-          <div class="progress">
-            <div class="progress-bar" id="progressBar"></div>
+        <div class="status-box">
+          <div class="label">Lyric Sync Panel</div>
+          <div class="status-grid">
+            <div><strong>Offset atual:</strong> <span id="offsetView">52.00s</span></div>
+            <div><strong>Letras:</strong> <span id="lyricState">visíveis</span></div>
+            <div><strong>Dica:</strong> <span>W adianta / S atrasa</span></div>
           </div>
         </div>
       </div>
 
+      <div class="sync-help">
+        <strong>Como sincronizar:</strong><br>
+        quando a voz entrar, aperte <strong>W</strong> se a letra estiver atrasada,
+        ou <strong>S</strong> se a letra estiver cedo demais.
+      </div>
+
       <div class="center">
+        <div class="duel-circle"></div>
         <div class="orb" id="orb"></div>
 
-        <div class="lyrics-stage">
-          <p class="line" data-start="0.0" data-end="5.1">Transport, motorways and tramlines</p>
-          <p class="line" data-start="5.2" data-end="9.7">Starting and then stopping</p>
-          <p class="line" data-start="9.8" data-end="14.4">Taking off and landing</p>
-          <p class="line" data-start="14.5" data-end="20.2">The emptiest of feelings</p>
+        <div class="lyrics-stage" id="lyricsStage">
+          <p class="line" data-start="0.0" data-end="5.2">Transport, motorways and tramlines</p>
+          <p class="line" data-start="5.2" data-end="9.8">Starting and then stopping</p>
+          <p class="line" data-start="9.8" data-end="14.3">Taking off and landing</p>
+          <p class="line" data-start="14.3" data-end="20.1">The emptiest of feelings</p>
 
-          <p class="line" data-start="20.3" data-end="24.8">Disappointed people</p>
-          <p class="line" data-start="24.9" data-end="30.3">Clinging onto bottles</p>
-          <p class="line" data-start="30.4" data-end="37.1">And when it comes it's so, so disappointing</p>
+          <p class="line" data-start="20.1" data-end="24.8">Disappointed people</p>
+          <p class="line" data-start="24.8" data-end="30.2">Clinging on to bottles</p>
+          <p class="line" data-start="30.2" data-end="37.0">And when it comes it's so, so disappointing</p>
 
-          <p class="line chorus" data-start="37.2" data-end="43.0">Let down and hanging around</p>
-          <p class="line chorus" data-start="43.1" data-end="49.3">Crushed like a bug in the ground</p>
-          <p class="line chorus" data-start="49.4" data-end="56.2">Let down and hanging around</p>
+          <p class="line chorus" data-start="37.0" data-end="43.0">Let down and hanging around</p>
+          <p class="line chorus" data-start="43.0" data-end="49.2">Crushed like a bug in the ground</p>
+          <p class="line chorus" data-start="49.2" data-end="56.0">Let down and hanging around</p>
 
           <p class="line" data-start="62.5" data-end="67.0">Shell smashed, juices flowing</p>
-          <p class="line" data-start="67.1" data-end="72.2">Wings twitch, legs are going</p>
-          <p class="line" data-start="72.3" data-end="77.6">Don't get sentimental</p>
-          <p class="line" data-start="77.7" data-end="83.8">It always ends up drivel</p>
+          <p class="line" data-start="67.0" data-end="72.2">Wings twitch, legs are going</p>
+          <p class="line" data-start="72.2" data-end="77.5">Don't get sentimental</p>
+          <p class="line" data-start="77.5" data-end="83.8">It always ends up drivel</p>
 
           <p class="line chorus" data-start="84.0" data-end="89.6">One day I am gonna grow wings</p>
-          <p class="line chorus" data-start="89.7" data-end="95.3">A chemical reaction</p>
-          <p class="line chorus" data-start="95.4" data-end="101.5">Hysterical and useless</p>
+          <p class="line chorus" data-start="89.6" data-end="95.3">A chemical reaction</p>
+          <p class="line chorus" data-start="95.3" data-end="101.5">Hysterical and useless</p>
 
           <p class="line chorus" data-start="108.0" data-end="114.2">Let down and hanging around</p>
-          <p class="line chorus" data-start="114.3" data-end="120.7">Crushed like a bug in the ground</p>
-          <p class="line chorus" data-start="120.8" data-end="127.5">Let down and hanging around</p>
+          <p class="line chorus" data-start="114.2" data-end="120.7">Crushed like a bug in the ground</p>
+          <p class="line chorus" data-start="120.7" data-end="127.5">Let down and hanging around</p>
 
-          <p class="line" data-start="127.6" data-end="133.9">You know, you know where you are with</p>
-          <p class="line" data-start="134.0" data-end="139.4">You know where you are with</p>
-          <p class="line chorus" data-start="139.5" data-end="148.5">Floor collapsing, floating</p>
-          <p class="line chorus" data-start="148.6" data-end="158.5">Bouncing back and one day I am gonna grow wings</p>
+          <p class="line" data-start="127.5" data-end="133.8">You know, you know where you are with</p>
+          <p class="line" data-start="133.8" data-end="139.3">You know where you are with</p>
+          <p class="line chorus" data-start="139.3" data-end="148.4">Floor collapsing, floating</p>
+          <p class="line chorus" data-start="148.4" data-end="158.4">Bouncing back and one day I am gonna grow wings</p>
         </div>
       </div>
 
       <div class="intro" id="intro">
-        <div class="mini">Press play</div>
-        <h2>Let Down</h2>
+        <div class="mini">Press Play</div>
+        <h2>Duel Dimension</h2>
         <p>
-          Agora a letra aparece com animação e glow.  
-          Para ajustar o começo, mude só o valor de <strong>VOCAL_OFFSET</strong>.
+          Esta versão já começa com um offset inicial pensado para a versão remasterizada.
+          Depois, você ajusta em tempo real pelas teclas W e S até casar perfeitamente com o seu mp3.
         </p>
         <button class="play-btn" id="playMain">▶</button>
       </div>
 
       <div class="bottom">
         <div class="track">
-          <strong>Let Down</strong>
-          <span>Radiohead • OK Computer</span>
+          <strong>Let Down (Remastered)</strong>
+          <span>Radiohead • visual inspirado em duelo mágico</span>
         </div>
 
         <div class="controls">
-          <button class="toggle" id="toggleBtn">▶</button>
-          <input class="seek" id="seek" type="range" min="0" max="1000" value="0">
+          <div class="buttons">
+            <button class="toggle" id="toggleBtn">▶</button>
+            <div class="action">W / S sync</div>
+            <div class="action">L esconder letras</div>
+            <div class="action">← / → navegar</div>
+          </div>
+
+          <div class="progress-block">
+            <input class="seek" id="seek" type="range" min="0" max="1000" value="0">
+            <div class="time" id="time">00:00 / 00:00</div>
+          </div>
         </div>
       </div>
     </div>
@@ -537,10 +750,9 @@
   </audio>
 
   <script>
-    // AJUSTE AQUI SE PRECISAR
-    // Se a letra entrar cedo demais, aumente um pouco.
-    // Se entrar tarde, diminua um pouco.
-    const VOCAL_OFFSET = 0;
+    // Offset inicial pensado para Let Down (Remastered).
+    // Ajuste em tempo real com W e S.
+    let VOCAL_OFFSET = 52.00;
 
     const music = document.getElementById("music");
     const lines = [...document.querySelectorAll(".line")];
@@ -548,19 +760,30 @@
     const playMain = document.getElementById("playMain");
     const toggleBtn = document.getElementById("toggleBtn");
     const seek = document.getElementById("seek");
-    const progressBar = document.getElementById("progressBar");
     const timeEl = document.getElementById("time");
     const orb = document.getElementById("orb");
+    const panel = document.getElementById("panel");
+    const lyricsStage = document.getElementById("lyricsStage");
+    const offsetView = document.getElementById("offsetView");
+    const lyricState = document.getElementById("lyricState");
 
-    const canvas = document.getElementById("bg");
-    const ctx = canvas.getContext("2d");
+    const starsCanvas = document.getElementById("stars");
+    const starsCtx = starsCanvas.getContext("2d");
+    const portalCanvas = document.getElementById("portal");
+    const portalCtx = portalCanvas.getContext("2d");
 
     let stars = [];
+    let particles = [];
     let animationStarted = false;
-    let lastActiveLine = null;
+    let lastLine = null;
+    let lyricsVisible = true;
 
     let audioCtx, analyser, sourceNode, freqData;
     let energy = 0;
+
+    function updateOffsetView() {
+      offsetView.textContent = `${VOCAL_OFFSET.toFixed(2)}s`;
+    }
 
     function setupAudio() {
       if (audioCtx) return;
@@ -592,7 +815,7 @@
           animate();
         }
       } catch (err) {
-        console.error("Erro ao tocar música:", err);
+        console.error("Erro ao tocar áudio:", err);
       }
     }
 
@@ -635,7 +858,7 @@
         const start = parseFloat(line.dataset.start);
         const end = parseFloat(line.dataset.end);
 
-        line.classList.remove("active", "exit", "emphasis");
+        line.classList.remove("active", "exit", "emphasis", "shock");
 
         if (lyricTime >= start && lyricTime <= end) {
           currentLine = line;
@@ -651,12 +874,17 @@
         const end = parseFloat(currentLine.dataset.end);
         const middle = start + (end - start) / 2;
 
-        if (Math.abs(lyricTime - middle) < 0.8) {
+        if (Math.abs(lyricTime - middle) < 0.7) {
           currentLine.classList.add("emphasis");
+        }
+
+        if (lastLine !== currentLine) {
+          currentLine.classList.add("shock");
+          spawnParticles();
         }
       }
 
-      lastActiveLine = currentLine;
+      lastLine = currentLine;
     }
 
     function updateProgress() {
@@ -664,8 +892,6 @@
       const duration = music.duration || 0;
 
       if (duration > 0) {
-        const percent = (current / duration) * 100;
-        progressBar.style.width = percent + "%";
         seek.value = Math.floor((current / duration) * 1000);
       }
 
@@ -679,23 +905,41 @@
       updateProgress();
     });
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    function resizeCanvases() {
+      starsCanvas.width = window.innerWidth;
+      starsCanvas.height = window.innerHeight;
+      portalCanvas.width = window.innerWidth;
+      portalCanvas.height = window.innerHeight;
       createStars();
     }
 
     function createStars() {
-      const total = Math.min(240, Math.floor((window.innerWidth * window.innerHeight) / 8000));
+      const total = Math.min(220, Math.floor((window.innerWidth * window.innerHeight) / 9000));
       stars = [];
 
       for (let i = 0; i < total; i++) {
         stars.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          z: Math.random() * canvas.width,
+          x: Math.random() * starsCanvas.width,
+          y: Math.random() * starsCanvas.height,
+          z: Math.random() * starsCanvas.width,
           size: Math.random() * 1.8 + 0.2,
-          speed: Math.random() * 0.5 + 0.15
+          speed: Math.random() * 0.55 + 0.18
+        });
+      }
+    }
+
+    function spawnParticles() {
+      const cx = portalCanvas.width / 2;
+      const cy = portalCanvas.height / 2;
+
+      for (let i = 0; i < 14; i++) {
+        particles.push({
+          x: cx,
+          y: cy,
+          angle: Math.random() * Math.PI * 2,
+          speed: Math.random() * 2.8 + 0.5,
+          life: 1,
+          size: Math.random() * 2.5 + 0.6
         });
       }
     }
@@ -714,64 +958,137 @@
       }
 
       const avg = sum / freqData.length / 255;
-      energy = energy * 0.88 + avg * 0.12;
+      energy = energy * 0.86 + avg * 0.14;
     }
 
-    function drawBackground() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    function drawStars() {
+      starsCtx.clearRect(0, 0, starsCanvas.width, starsCanvas.height);
 
-      const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      grad.addColorStop(0, "rgba(8,12,24,.22)");
-      grad.addColorStop(1, "rgba(4,5,10,.72)");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const grad = starsCtx.createLinearGradient(0, 0, 0, starsCanvas.height);
+      grad.addColorStop(0, "rgba(7,9,20,0.25)");
+      grad.addColorStop(1, "rgba(4,5,11,0.75)");
+      starsCtx.fillStyle = grad;
+      starsCtx.fillRect(0, 0, starsCanvas.width, starsCanvas.height);
 
-      const cx = canvas.width / 2;
-      const cy = canvas.height / 2;
+      const cx = starsCanvas.width / 2;
+      const cy = starsCanvas.height / 2;
 
       for (const s of stars) {
-        s.z -= s.speed + energy * 4;
+        s.z -= s.speed + energy * 4.5;
 
         if (s.z <= 1) {
-          s.x = Math.random() * canvas.width;
-          s.y = Math.random() * canvas.height;
-          s.z = canvas.width;
+          s.x = Math.random() * starsCanvas.width;
+          s.y = Math.random() * starsCanvas.height;
+          s.z = starsCanvas.width;
         }
 
-        const k = canvas.width / s.z;
+        const k = starsCanvas.width / s.z;
         const x = (s.x - cx) * k + cx;
         const y = (s.y - cy) * k + cy;
-        const radius = s.size * (1.2 - s.z / canvas.width) * 1.6;
+        const radius = s.size * (1.2 - s.z / starsCanvas.width) * 1.8;
 
-        if (x < -50 || x > canvas.width + 50 || y < -50 || y > canvas.height + 50) continue;
+        if (x < -60 || x > starsCanvas.width + 60 || y < -60 || y > starsCanvas.height + 60) continue;
 
-        ctx.beginPath();
-        ctx.fillStyle = `rgba(158,208,255,${0.14 + (1 - s.z / canvas.width) * 0.82})`;
-        ctx.arc(x, y, Math.max(0.2, radius), 0, Math.PI * 2);
-        ctx.fill();
+        starsCtx.beginPath();
+        starsCtx.fillStyle = `rgba(246,223,154,${0.10 + (1 - s.z / starsCanvas.width) * 0.7})`;
+        starsCtx.arc(x, y, Math.max(0.2, radius), 0, Math.PI * 2);
+        starsCtx.fill();
+      }
+    }
+
+    function drawPortal() {
+      portalCtx.clearRect(0, 0, portalCanvas.width, portalCanvas.height);
+
+      const cx = portalCanvas.width / 2;
+      const cy = portalCanvas.height / 2;
+      const maxR = Math.min(portalCanvas.width, portalCanvas.height) * 0.22;
+
+      for (let i = 0; i < 3; i++) {
+        const r = maxR * (0.55 + i * 0.22 + energy * 0.12);
+        portalCtx.beginPath();
+        portalCtx.strokeStyle = i % 2 === 0
+          ? `rgba(114,183,255,${0.12 - i * 0.02 + energy * 0.08})`
+          : `rgba(232,195,106,${0.10 - i * 0.02 + energy * 0.07})`;
+        portalCtx.lineWidth = 1.5;
+        portalCtx.arc(cx, cy, r, 0, Math.PI * 2);
+        portalCtx.stroke();
       }
 
-      const glowBg = ctx.createRadialGradient(
-        cx, cy, 0,
-        cx, cy, Math.max(canvas.width, canvas.height) * 0.4
-      );
-      glowBg.addColorStop(0, `rgba(114,169,255,${0.05 + energy * 0.16})`);
-      glowBg.addColorStop(1, "rgba(114,169,255,0)");
-      ctx.fillStyle = glowBg;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const glow = portalCtx.createRadialGradient(cx, cy, 0, cx, cy, maxR * 1.4);
+      glow.addColorStop(0, `rgba(114,183,255,${0.08 + energy * 0.18})`);
+      glow.addColorStop(0.5, `rgba(143,107,255,${0.06 + energy * 0.12})`);
+      glow.addColorStop(1, "rgba(0,0,0,0)");
+      portalCtx.fillStyle = glow;
+      portalCtx.fillRect(0, 0, portalCanvas.width, portalCanvas.height);
+
+      particles = particles.filter(p => p.life > 0);
+
+      for (const p of particles) {
+        p.x += Math.cos(p.angle) * p.speed;
+        p.y += Math.sin(p.angle) * p.speed;
+        p.life -= 0.025;
+
+        portalCtx.beginPath();
+        portalCtx.fillStyle = `rgba(246,223,154,${Math.max(0, p.life)})`;
+        portalCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        portalCtx.fill();
+      }
     }
 
     function animate() {
       getEnergy();
-      drawBackground();
+      drawStars();
+      drawPortal();
       updateLyrics();
       updateProgress();
 
-      orb.style.transform = `scale(${1 + energy * 0.45})`;
-      orb.style.opacity = 0.42 + energy * 0.55;
+      orb.style.transform = `scale(${1 + energy * 0.55})`;
+      orb.style.opacity = 0.42 + energy * 0.58;
 
       requestAnimationFrame(animate);
     }
+
+    function toggleLyrics() {
+      lyricsVisible = !lyricsVisible;
+      panel.classList.toggle("hidden-lyrics", !lyricsVisible);
+      lyricState.textContent = lyricsVisible ? "visíveis" : "ocultas";
+    }
+
+    document.addEventListener("keydown", async (e) => {
+      if (e.target.tagName === "INPUT") return;
+
+      if (e.code === "Space") {
+        e.preventDefault();
+        toggleMusic();
+      }
+
+      if (e.code === "ArrowRight") {
+        music.currentTime = Math.min((music.duration || 0), music.currentTime + 5);
+      }
+
+      if (e.code === "ArrowLeft") {
+        music.currentTime = Math.max(0, music.currentTime - 5);
+      }
+
+      if (e.key === "w" || e.key === "W") {
+        VOCAL_OFFSET = Math.max(0, VOCAL_OFFSET - 0.10);
+        updateOffsetView();
+      }
+
+      if (e.key === "s" || e.key === "S") {
+        VOCAL_OFFSET += 0.10;
+        updateOffsetView();
+      }
+
+      if (e.key === "d" || e.key === "D") {
+        VOCAL_OFFSET = 52.00;
+        updateOffsetView();
+      }
+
+      if (e.key === "l" || e.key === "L") {
+        toggleLyrics();
+      }
+    });
 
     music.addEventListener("loadedmetadata", updateProgress);
     music.addEventListener("timeupdate", () => {
@@ -783,9 +1100,10 @@
       toggleBtn.textContent = "▶";
     });
 
-    window.addEventListener("resize", resizeCanvas);
+    window.addEventListener("resize", resizeCanvases);
 
-    resizeCanvas();
+    resizeCanvases();
+    updateOffsetView();
     updateProgress();
     updateLyrics();
   </script>
