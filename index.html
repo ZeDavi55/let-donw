@@ -1,210 +1,766 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Radiohead // Let Down Experience</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;400;900&family=Playfair+Display:ital,wght@1,500&family=JetBrains+Mono:wght@200&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --accent: #58a6ff;
-            --bg: #050508;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Radiohead // Let Down Experience</title>
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700;900&family=Playfair+Display:ital,wght@1,500;1,700&family=JetBrains+Mono:wght@300;500&display=swap" rel="stylesheet">
 
-        body {
-            background-color: var(--bg);
-            color: white;
-            font-family: 'Inter', sans-serif;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+  <style>
+    :root{
+      --bg:#04050a;
+      --bg2:#0a1020;
+      --accent:#89c2ff;
+      --accent-soft:rgba(137,194,255,.18);
+      --text:#f4f7ff;
+      --muted:rgba(255,255,255,.5);
+      --glass:rgba(255,255,255,.06);
+      --border:rgba(255,255,255,.10);
+      --shadow:0 20px 80px rgba(0,0,0,.45);
+    }
 
-        #canvas-nebula {
-            position: fixed;
-            top: 0; left: 0;
-            z-index: 1;
-        }
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
 
-        .crt-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            background-size: 100% 3px, 3px 100%;
-            z-index: 50;
-            pointer-events: none;
-        }
+    html,body{
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(88,166,255,.10), transparent 28%),
+        radial-gradient(circle at 80% 30%, rgba(120,140,255,.10), transparent 25%),
+        radial-gradient(circle at 50% 80%, rgba(255,255,255,.05), transparent 35%),
+        linear-gradient(180deg, var(--bg2), var(--bg));
+      color:var(--text);
+      font-family:'Inter',sans-serif;
+    }
 
-        .system-ui {
-            position: fixed;
-            z-index: 100;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 9px;
-            color: var(--accent);
-            padding: 40px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-        .ui-tl { top: 0; left: 0; }
-        .ui-br { bottom: 0; right: 0; text-align: right; }
+    body{
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
 
-        .lyric-stage {
-            position: relative;
-            z-index: 20;
-            width: 85vw;
-            height: 50vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    canvas{
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100%;
+      z-index:0;
+    }
 
-        .line {
-            position: absolute;
-            font-size: clamp(2rem, 6vw, 5rem);
-            font-weight: 100;
-            text-align: center;
-            opacity: 0;
-            transform: scale(0.9) translateY(40px);
-            filter: blur(15px);
-            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
-            width: 100%;
-            pointer-events: none;
-        }
+    .noise,
+    .vignette,
+    .scanlines{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+    }
 
-        .line.active {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-            filter: blur(0);
-        }
+    .noise{
+      z-index:2;
+      opacity:.04;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,.4) 0.6px, transparent 0.7px);
+      background-size: 8px 8px;
+      mix-blend-mode:screen;
+    }
 
-        .line.chorus {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            color: var(--accent);
-            text-shadow: 0 0 40px rgba(88, 166, 255, 0.3);
-        }
+    .scanlines{
+      z-index:3;
+      opacity:.10;
+      background:
+        linear-gradient(rgba(255,255,255,.04) 50%, rgba(0,0,0,0) 50%);
+      background-size:100% 4px;
+    }
 
-        .footer-controls {
-            position: fixed;
-            bottom: 40px;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
+    .vignette{
+      z-index:4;
+      background:radial-gradient(circle, transparent 40%, rgba(0,0,0,.45) 100%);
+    }
 
-        audio {
-            filter: invert(1);
-            height: 30px;
-            opacity: 0.2;
-            transition: 0.5s;
-        }
-        audio:hover { opacity: 0.8; }
-    </style>
+    .hud{
+      position:fixed;
+      z-index:10;
+      font-family:'JetBrains Mono', monospace;
+      font-size:10px;
+      line-height:1.8;
+      letter-spacing:2px;
+      color:rgba(137,194,255,.8);
+      text-transform:uppercase;
+      text-shadow:0 0 14px rgba(137,194,255,.25);
+      user-select:none;
+    }
+
+    .hud.left{
+      top:28px;
+      left:28px;
+    }
+
+    .hud.right{
+      right:28px;
+      bottom:28px;
+      text-align:right;
+    }
+
+    .main{
+      position:relative;
+      z-index:20;
+      width:min(1000px, 92vw);
+      height:min(72vh, 760px);
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      padding:28px;
+      border:1px solid var(--border);
+      border-radius:28px;
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      backdrop-filter:blur(18px);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .main::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      border-radius:28px;
+      padding:1px;
+      background:linear-gradient(135deg, rgba(255,255,255,.15), rgba(137,194,255,.1), rgba(255,255,255,.04));
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite:xor;
+              mask-composite:exclude;
+      pointer-events:none;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      position:relative;
+      z-index:2;
+    }
+
+    .tag{
+      font-size:11px;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      color:var(--muted);
+      font-family:'JetBrains Mono', monospace;
+    }
+
+    .title{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .title h1{
+      font-size:clamp(1.4rem, 2.5vw, 2.3rem);
+      font-weight:900;
+      letter-spacing:-0.03em;
+    }
+
+    .title p{
+      color:var(--muted);
+      font-size:0.95rem;
+    }
+
+    .progress-wrap{
+      width:min(260px, 36vw);
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      align-items:flex-end;
+    }
+
+    .timer{
+      font-family:'JetBrains Mono', monospace;
+      color:var(--muted);
+      font-size:11px;
+      letter-spacing:1px;
+    }
+
+    .progress{
+      width:100%;
+      height:8px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      overflow:hidden;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);
+    }
+
+    .progress-bar{
+      width:0%;
+      height:100%;
+      border-radius:999px;
+      background:linear-gradient(90deg, rgba(137,194,255,.55), rgba(137,194,255,1));
+      box-shadow:0 0 18px rgba(137,194,255,.45);
+      transition:width .08s linear;
+    }
+
+    .stage{
+      position:relative;
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+
+    .pulse-ring{
+      position:absolute;
+      width:340px;
+      height:340px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(137,194,255,.18), transparent 65%);
+      filter:blur(20px);
+      opacity:.6;
+      transform:scale(1);
+      transition:transform .08s linear, opacity .2s linear;
+      pointer-events:none;
+    }
+
+    .lyrics{
+      position:relative;
+      width:min(840px, 92%);
+      min-height:220px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
+
+    .line{
+      position:absolute;
+      width:100%;
+      padding:0 10px;
+      font-size:clamp(1.7rem, 5.2vw, 4.8rem);
+      font-weight:200;
+      line-height:1.12;
+      letter-spacing:-0.04em;
+      opacity:0;
+      transform:translateY(30px) scale(.98);
+      filter:blur(14px);
+      transition:
+        opacity .9s ease,
+        transform .9s cubic-bezier(.19,1,.22,1),
+        filter .9s ease,
+        color .4s ease,
+        text-shadow .4s ease;
+      pointer-events:none;
+      text-wrap:balance;
+    }
+
+    .line.active{
+      opacity:1;
+      transform:translateY(0) scale(1);
+      filter:blur(0);
+    }
+
+    .line.fade-out{
+      opacity:0;
+      transform:translateY(-16px) scale(1.01);
+      filter:blur(8px);
+    }
+
+    .line.chorus{
+      font-family:'Playfair Display', serif;
+      font-style:italic;
+      color:var(--accent);
+      text-shadow:
+        0 0 24px rgba(137,194,255,.20),
+        0 0 60px rgba(137,194,255,.12);
+    }
+
+    .bottom{
+      position:relative;
+      z-index:2;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      flex-wrap:wrap;
+    }
+
+    .controls{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .play-btn{
+      width:58px;
+      height:58px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+      color:white;
+      cursor:pointer;
+      display:grid;
+      place-items:center;
+      font-size:18px;
+      backdrop-filter:blur(10px);
+      box-shadow:0 12px 30px rgba(0,0,0,.25);
+      transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .play-btn:hover{
+      transform:scale(1.04);
+      border-color:rgba(137,194,255,.35);
+      box-shadow:0 0 28px rgba(137,194,255,.15);
+    }
+
+    .meta{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+
+    .meta strong{
+      font-size:.96rem;
+    }
+
+    .meta span{
+      color:var(--muted);
+      font-size:.84rem;
+    }
+
+    .seek{
+      flex:1;
+      min-width:240px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .seek input[type="range"]{
+      -webkit-appearance:none;
+      appearance:none;
+      width:100%;
+      height:6px;
+      border-radius:999px;
+      background:rgba(255,255,255,.12);
+      outline:none;
+      cursor:pointer;
+    }
+
+    .seek input[type="range"]::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      appearance:none;
+      width:14px;
+      height:14px;
+      border-radius:50%;
+      background:#fff;
+      box-shadow:0 0 0 4px rgba(137,194,255,.18);
+    }
+
+    .hint{
+      position:absolute;
+      left:50%;
+      bottom:95px;
+      transform:translateX(-50%);
+      z-index:22;
+      font-size:.85rem;
+      color:rgba(255,255,255,.58);
+      padding:10px 16px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.09);
+      border-radius:999px;
+      backdrop-filter:blur(10px);
+      opacity:1;
+      transition:opacity .5s ease, transform .5s ease;
+    }
+
+    .hint.hide{
+      opacity:0;
+      transform:translateX(-50%) translateY(8px);
+      pointer-events:none;
+    }
+
+    audio{
+      display:none;
+    }
+
+    @media (max-width: 768px){
+      .hud{
+        font-size:8px;
+        letter-spacing:1px;
+        padding:0;
+      }
+
+      .hud.left{
+        top:16px;
+        left:16px;
+      }
+
+      .hud.right{
+        right:16px;
+        bottom:16px;
+      }
+
+      .main{
+        width:94vw;
+        height:82vh;
+        padding:18px;
+        border-radius:22px;
+      }
+
+      .topbar, .bottom{
+        gap:14px;
+      }
+
+      .progress-wrap{
+        width:100%;
+        align-items:flex-start;
+      }
+
+      .bottom{
+        flex-direction:column;
+        align-items:stretch;
+      }
+
+      .seek{
+        min-width:0;
+      }
+
+      .pulse-ring{
+        width:260px;
+        height:260px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="crt-overlay"></div>
-    <canvas id="canvas-nebula"></canvas>
+  <canvas id="stars"></canvas>
+  <div class="noise"></div>
+  <div class="scanlines"></div>
+  <div class="vignette"></div>
 
-    <div class="system-ui ui-tl">
-        SIGNAL_ID: OK_COMPUTER<br>
-        TRACK_05: LET_DOWN<br>
-        SENSITIVITY: HIGH
+  <div class="hud left">
+    SIGNAL_ID: OK_COMPUTER<br>
+    TRACK_05: LET_DOWN<br>
+    SENSITIVITY: HIGH
+  </div>
+
+  <div class="hud right">
+    "ONE DAY I AM GONNA GROW WINGS"<br>
+    IMMERSIVE_SYNC_MODE
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="title">
+        <div class="tag">Radiohead Experience</div>
+        <h1>Let Down</h1>
+        <p>Uma experiência visual sincronizada com a música</p>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="timer" id="timer">00:00 / 00:00</div>
+        <div class="progress">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+      </div>
     </div>
 
-    <div class="system-ui ui-br">
-        "ONE DAY I AM GONNA GROW WINGS"<br>
-        2026_REMASTER_SYNC
+    <div class="stage">
+      <div class="pulse-ring" id="pulseRing"></div>
+
+      <div class="lyrics">
+        <p class="line" data-start="0.00" data-end="5.20">Transport, motorways and tramlines</p>
+        <p class="line" data-start="5.25" data-end="9.90">Starting and then stopping</p>
+        <p class="line" data-start="10.00" data-end="14.80">Taking off and landing</p>
+        <p class="line" data-start="14.90" data-end="20.80">The emptiest of feelings</p>
+
+        <p class="line" data-start="21.00" data-end="25.70">Disappointed people</p>
+        <p class="line" data-start="25.80" data-end="31.50">Clinging onto bottles</p>
+        <p class="line" data-start="31.60" data-end="37.60">And when it comes it's so, so disappointing</p>
+        <p class="line" data-start="37.70" data-end="43.20">Let down and hanging around</p>
+
+        <p class="line chorus" data-start="43.30" data-end="49.60">Crushed like a bug in the ground</p>
+        <p class="line chorus" data-start="49.70" data-end="56.20">Let down and hanging around</p>
+
+        <p class="line" data-start="62.80" data-end="67.20">Shell smashed, juices flowing</p>
+        <p class="line" data-start="67.30" data-end="72.70">Wings twitch, legs are going</p>
+        <p class="line" data-start="72.80" data-end="78.20">Don't get sentimental</p>
+        <p class="line" data-start="78.30" data-end="84.60">It always ends up drivel</p>
+
+        <p class="line" data-start="84.70" data-end="89.60">One day I am gonna grow wings</p>
+        <p class="line chorus" data-start="89.70" data-end="95.70">A chemical reaction</p>
+        <p class="line chorus" data-start="95.80" data-end="101.90">Hysterical and useless</p>
+        <p class="line chorus" data-start="102.00" data-end="108.40">Hysterical and...</p>
+
+        <p class="line" data-start="109.20" data-end="114.80">Let down and hanging around</p>
+        <p class="line chorus" data-start="114.90" data-end="121.20">Crushed like a bug in the ground</p>
+        <p class="line chorus" data-start="121.30" data-end="128.20">Let down and hanging around</p>
+
+        <p class="line" data-start="128.30" data-end="134.40">You know, you know where you are with</p>
+        <p class="line" data-start="134.50" data-end="140.80">You know where you are with</p>
+        <p class="line chorus" data-start="140.90" data-end="149.50">Floor collapsing, floating</p>
+        <p class="line chorus" data-start="149.60" data-end="159.00">Bouncing back and one day I am gonna grow wings</p>
+      </div>
     </div>
 
-    <div class="lyric-stage">
-        <p class="line" data-start="0" data-end="10">Transport, motorways and tramlines</p>
-        <p class="line" data-start="10.1" data-end="14.5">Starting and then stopping</p>
-        <p class="line" data-start="14.6" data-end="20.5">Taking into everywhere</p>
-        <p class="line" data-start="20.6" data-end="26.5">Cheating, stealing, and overlapping</p>
-        <p class="line" data-start="26.6" data-end="32">Yelling empty words</p>
-        <p class="line" data-start="32.1" data-end="42.5">Don't get sentimental<br>It sounds tonight so hollow</p>
-        
-        <p class="line chorus" data-start="43.5" data-end="50">Let down and hanging around</p>
-        <p class="line chorus" data-start="50.1" data-end="57">Crushed like a bug in the ground</p>
-        <p class="line chorus" data-start="57.1" data-end="68">Let down and hanging around</p>
+    <div class="bottom">
+      <div class="controls">
+        <button class="play-btn" id="playBtn" aria-label="Tocar música">▶</button>
+        <div class="meta">
+          <strong>Let Down</strong>
+          <span>Radiohead • OK Computer</span>
+        </div>
+      </div>
 
-        <p class="line" data-start="75" data-end="80">Shell smashed, juiceless guy</p>
-        <p class="line" data-start="80.1" data-end="85">Sentimental, gently sentimental</p>
-        <p class="line" data-start="85.1" data-end="92">With no worries or cares</p>
-        
-        <p class="line chorus" data-start="100" data-end="106">One day I am gonna grow wings</p>
-        <p class="line chorus" data-start="106.1" data-end="111">A chemical reaction</p>
-        <p class="line chorus" data-start="111.1" data-end="118">Hysterical and useless</p>
+      <div class="seek">
+        <input type="range" id="seekBar" min="0" max="1000" value="0">
+      </div>
     </div>
+  </div>
 
-    <div class="footer-controls">
-        <audio id="music" controls>
-            <source src="letdown.mp3" type="audio/mpeg">
-        </audio>
-    </div>
+  <div class="hint" id="hint">clique em play para começar a experiência</div>
 
-    <script>
-        const canvas = document.getElementById('canvas-nebula');
-        const ctx = canvas.getContext('2d');
-        let dots = [];
+  <audio id="music" preload="auto">
+    <source src="letdown.mp3" type="audio/mpeg">
+  </audio>
 
-        function init() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            dots = [];
-            for(let i=0; i<200; i++) {
-                dots.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    z: Math.random() * canvas.width,
-                    size: Math.random() * 1.5
-                });
-            }
-        }
+  <script>
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
 
-        function draw() {
-            ctx.fillStyle = "rgba(5, 5, 8, 0.2)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            dots.forEach(d => {
-                d.z -= 0.4;
-                if(d.z <= 0) d.z = canvas.width;
-                let sx = (d.x - canvas.width/2) * (canvas.width/d.z) + canvas.width/2;
-                let sy = (d.y - canvas.height/2) * (canvas.width/d.z) + canvas.height/2;
-                let sz = (1 - d.z/canvas.width) * 1.5;
-                ctx.fillStyle = `rgba(88, 166, 255, ${sz})`;
-                ctx.beginPath();
-                ctx.arc(sx, sy, d.size * sz, 0, Math.PI*2);
-                ctx.fill();
-            });
-            requestAnimationFrame(draw);
-        }
+    const music = document.getElementById("music");
+    const playBtn = document.getElementById("playBtn");
+    const lines = [...document.querySelectorAll(".line")];
+    const progressBar = document.getElementById("progressBar");
+    const timer = document.getElementById("timer");
+    const seekBar = document.getElementById("seekBar");
+    const pulseRing = document.getElementById("pulseRing");
+    const hint = document.getElementById("hint");
 
-        const music = document.getElementById('music');
-        const lines = document.querySelectorAll('.line');
+    let stars = [];
+    let audioCtx, analyser, sourceNode, frequencyData;
+    let smoothedEnergy = 0;
+    let animationStarted = false;
 
-        music.addEventListener('timeupdate', () => {
-            let time = music.currentTime;
-            lines.forEach(line => {
-                let start = parseFloat(line.dataset.start);
-                let end = parseFloat(line.dataset.end);
-                if (time >= start && time <= end) {
-                    line.classList.add('active');
-                } else {
-                    line.classList.remove('active');
-                }
-            });
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      createStars();
+    }
+
+    function createStars() {
+      const amount = Math.min(220, Math.floor((window.innerWidth * window.innerHeight) / 7000));
+      stars = [];
+
+      for (let i = 0; i < amount; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          z: Math.random() * canvas.width,
+          size: Math.random() * 1.8 + 0.3,
+          speed: Math.random() * 0.7 + 0.25
         });
+      }
+    }
 
-        window.addEventListener('resize', init);
-        init(); draw();
-    </script>
+    function drawBackground() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      bg.addColorStop(0, "rgba(4,5,10,0.25)");
+      bg.addColorStop(1, "rgba(4,5,10,0.75)");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+
+      for (const s of stars) {
+        s.z -= s.speed + smoothedEnergy * 8;
+        if (s.z <= 1) {
+          s.x = Math.random() * canvas.width;
+          s.y = Math.random() * canvas.height;
+          s.z = canvas.width;
+        }
+
+        const k = canvas.width / s.z;
+        const x = (s.x - centerX) * k + centerX;
+        const y = (s.y - centerY) * k + centerY;
+        const radius = s.size * (1.2 - s.z / canvas.width) * 1.5;
+
+        if (x < -50 || x > canvas.width + 50 || y < -50 || y > canvas.height + 50) continue;
+
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(137,194,255,${0.15 + (1 - s.z / canvas.width) * 0.9})`;
+        ctx.arc(x, y, Math.max(0.2, radius), 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      const glow = ctx.createRadialGradient(
+        canvas.width / 2,
+        canvas.height / 2,
+        0,
+        canvas.width / 2,
+        canvas.height / 2,
+        Math.max(canvas.width, canvas.height) * 0.45
+      );
+      glow.addColorStop(0, `rgba(137,194,255,${0.06 + smoothedEnergy * 0.22})`);
+      glow.addColorStop(1, "rgba(137,194,255,0)");
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function formatTime(sec) {
+      if (!isFinite(sec)) return "00:00";
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+    }
+
+    function updateLyrics(currentTime) {
+      lines.forEach(line => {
+        const start = parseFloat(line.dataset.start);
+        const end = parseFloat(line.dataset.end);
+        const fadeWindow = 0.55;
+
+        line.classList.remove("active", "fade-out");
+
+        if (currentTime >= start && currentTime <= end) {
+          line.classList.add("active");
+
+          if (end - currentTime <= fadeWindow) {
+            line.classList.add("fade-out");
+          }
+        }
+      });
+    }
+
+    function updateProgress() {
+      const current = music.currentTime || 0;
+      const duration = music.duration || 0;
+
+      if (duration > 0) {
+        const percent = (current / duration) * 100;
+        progressBar.style.width = percent + "%";
+        seekBar.value = Math.floor((current / duration) * 1000);
+      }
+
+      timer.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
+    }
+
+    function setupAudioReactive() {
+      if (audioCtx) return;
+
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+      frequencyData = new Uint8Array(analyser.frequencyBinCount);
+
+      sourceNode = audioCtx.createMediaElementSource(music);
+      sourceNode.connect(analyser);
+      analyser.connect(audioCtx.destination);
+    }
+
+    function getAudioEnergy() {
+      if (!analyser || music.paused) {
+        smoothedEnergy *= 0.92;
+        return;
+      }
+
+      analyser.getByteFrequencyData(frequencyData);
+      let sum = 0;
+
+      for (let i = 0; i < frequencyData.length; i++) {
+        sum += frequencyData[i];
+      }
+
+      const avg = sum / frequencyData.length / 255;
+      smoothedEnergy = smoothedEnergy * 0.86 + avg * 0.14;
+    }
+
+    function animate() {
+      getAudioEnergy();
+      drawBackground();
+      updateLyrics(music.currentTime || 0);
+      updateProgress();
+
+      const scale = 1 + smoothedEnergy * 0.55;
+      const opacity = 0.35 + smoothedEnergy * 0.9;
+      pulseRing.style.transform = `scale(${scale})`;
+      pulseRing.style.opacity = opacity;
+
+      requestAnimationFrame(animate);
+    }
+
+    async function togglePlay() {
+      try {
+        setupAudioReactive();
+
+        if (audioCtx.state === "suspended") {
+          await audioCtx.resume();
+        }
+
+        if (music.paused) {
+          await music.play();
+          playBtn.textContent = "❚❚";
+          hint.classList.add("hide");
+        } else {
+          music.pause();
+          playBtn.textContent = "▶";
+        }
+
+        if (!animationStarted) {
+          animationStarted = true;
+          animate();
+        }
+      } catch (err) {
+        console.error("Erro ao tocar áudio:", err);
+      }
+    }
+
+    playBtn.addEventListener("click", togglePlay);
+
+    music.addEventListener("play", () => {
+      playBtn.textContent = "❚❚";
+      hint.classList.add("hide");
+    });
+
+    music.addEventListener("pause", () => {
+      playBtn.textContent = "▶";
+    });
+
+    music.addEventListener("ended", () => {
+      playBtn.textContent = "▶";
+      seekBar.value = 0;
+    });
+
+    music.addEventListener("loadedmetadata", updateProgress);
+    music.addEventListener("timeupdate", () => {
+      updateLyrics(music.currentTime);
+      updateProgress();
+    });
+
+    seekBar.addEventListener("input", () => {
+      if (!music.duration) return;
+      const time = (seekBar.value / 1000) * music.duration;
+      music.currentTime = time;
+      updateLyrics(time);
+      updateProgress();
+    });
+
+    window.addEventListener("resize", resizeCanvas);
+
+    resizeCanvas();
+    updateProgress();
+    updateLyrics(0);
+  </script>
 </body>
 </html>
