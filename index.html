@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Radiohead // Let Down Experience</title>
+  <title>Let Down — Radiohead</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700;900&family=Playfair+Display:ital,wght@1,500;1,700&family=JetBrains+Mono:wght@300;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600;800&family=Playfair+Display:ital,wght@1,500;1,700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --bg:#04050a;
-      --bg2:#0a1020;
-      --accent:#89c2ff;
-      --accent-soft:rgba(137,194,255,.18);
-      --text:#f4f7ff;
-      --muted:rgba(255,255,255,.5);
+      --bg:#05070d;
+      --bg2:#0a1220;
+      --text:#eef3ff;
+      --muted:rgba(255,255,255,.55);
+      --line:rgba(255,255,255,.10);
       --glass:rgba(255,255,255,.06);
-      --border:rgba(255,255,255,.10);
+      --accent:#9bc7ff;
+      --accent2:#6ea8ff;
       --shadow:0 20px 80px rgba(0,0,0,.45);
     }
 
@@ -31,9 +31,8 @@
       height:100%;
       overflow:hidden;
       background:
-        radial-gradient(circle at 20% 20%, rgba(88,166,255,.10), transparent 28%),
-        radial-gradient(circle at 80% 30%, rgba(120,140,255,.10), transparent 25%),
-        radial-gradient(circle at 50% 80%, rgba(255,255,255,.05), transparent 35%),
+        radial-gradient(circle at 20% 20%, rgba(110,168,255,.10), transparent 20%),
+        radial-gradient(circle at 80% 30%, rgba(155,199,255,.08), transparent 22%),
         linear-gradient(180deg, var(--bg2), var(--bg));
       color:var(--text);
       font-family:'Inter',sans-serif;
@@ -41,9 +40,6 @@
 
     body{
       position:relative;
-      display:flex;
-      align-items:center;
-      justify-content:center;
     }
 
     canvas{
@@ -54,138 +50,128 @@
       z-index:0;
     }
 
-    .noise,
-    .vignette,
-    .scanlines{
+    .grain,
+    .vignette{
       position:fixed;
       inset:0;
       pointer-events:none;
     }
 
-    .noise{
-      z-index:2;
-      opacity:.04;
-      background-image:
-        radial-gradient(circle, rgba(255,255,255,.4) 0.6px, transparent 0.7px);
-      background-size: 8px 8px;
-      mix-blend-mode:screen;
-    }
-
-    .scanlines{
-      z-index:3;
-      opacity:.10;
-      background:
-        linear-gradient(rgba(255,255,255,.04) 50%, rgba(0,0,0,0) 50%);
-      background-size:100% 4px;
+    .grain{
+      z-index:1;
+      opacity:.05;
+      background-image: radial-gradient(circle, rgba(255,255,255,.55) .7px, transparent .8px);
+      background-size: 9px 9px;
     }
 
     .vignette{
-      z-index:4;
-      background:radial-gradient(circle, transparent 40%, rgba(0,0,0,.45) 100%);
+      z-index:2;
+      background: radial-gradient(circle, transparent 35%, rgba(0,0,0,.55) 100%);
     }
 
     .hud{
       position:fixed;
-      z-index:10;
-      font-family:'JetBrains Mono', monospace;
+      z-index:5;
+      font-family:'JetBrains Mono',monospace;
       font-size:10px;
-      line-height:1.8;
+      color:rgba(155,199,255,.75);
       letter-spacing:2px;
-      color:rgba(137,194,255,.8);
       text-transform:uppercase;
-      text-shadow:0 0 14px rgba(137,194,255,.25);
+      line-height:1.8;
       user-select:none;
     }
 
     .hud.left{
-      top:28px;
-      left:28px;
+      top:24px;
+      left:24px;
     }
 
     .hud.right{
-      right:28px;
-      bottom:28px;
+      right:24px;
+      bottom:24px;
       text-align:right;
     }
 
-    .main{
+    .app{
       position:relative;
-      z-index:20;
-      width:min(1000px, 92vw);
-      height:min(72vh, 760px);
+      z-index:10;
+      width:100%;
+      height:100%;
       display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      padding:28px;
-      border:1px solid var(--border);
-      border-radius:28px;
-      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
-      backdrop-filter:blur(18px);
+      align-items:center;
+      justify-content:center;
+      padding:22px;
+    }
+
+    .panel{
+      position:relative;
+      width:min(1100px, 95vw);
+      height:min(760px, 92vh);
+      border:1px solid var(--line);
+      border-radius:30px;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      backdrop-filter:blur(20px);
       box-shadow:var(--shadow);
       overflow:hidden;
     }
 
-    .main::before{
+    .panel::before{
       content:"";
       position:absolute;
-      inset:-1px;
-      border-radius:28px;
-      padding:1px;
-      background:linear-gradient(135deg, rgba(255,255,255,.15), rgba(137,194,255,.1), rgba(255,255,255,.04));
-      -webkit-mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-      -webkit-mask-composite:xor;
-              mask-composite:exclude;
+      inset:0;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.07), transparent 30%),
+        linear-gradient(315deg, rgba(155,199,255,.05), transparent 35%);
       pointer-events:none;
     }
 
-    .topbar{
+    .top{
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      padding:28px 28px 0 28px;
       display:flex;
+      align-items:flex-start;
       justify-content:space-between;
-      align-items:center;
-      gap:16px;
-      position:relative;
-      z-index:2;
+      gap:20px;
+      z-index:4;
     }
 
-    .tag{
+    .title small{
+      display:block;
       font-size:11px;
-      letter-spacing:2px;
       text-transform:uppercase;
+      letter-spacing:2px;
       color:var(--muted);
-      font-family:'JetBrains Mono', monospace;
-    }
-
-    .title{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
+      margin-bottom:10px;
     }
 
     .title h1{
-      font-size:clamp(1.4rem, 2.5vw, 2.3rem);
-      font-weight:900;
-      letter-spacing:-0.03em;
+      font-size:clamp(2rem,4vw,3.4rem);
+      font-weight:800;
+      letter-spacing:-.04em;
     }
 
     .title p{
+      margin-top:8px;
       color:var(--muted);
-      font-size:0.95rem;
+      font-size:.98rem;
     }
 
     .progress-wrap{
-      width:min(260px, 36vw);
+      width:min(300px,40vw);
       display:flex;
       flex-direction:column;
-      gap:8px;
+      gap:10px;
       align-items:flex-end;
+      padding-top:8px;
     }
 
-    .timer{
-      font-family:'JetBrains Mono', monospace;
-      color:var(--muted);
+    .time{
+      font-family:'JetBrains Mono',monospace;
       font-size:11px;
+      color:var(--muted);
       letter-spacing:1px;
     }
 
@@ -195,44 +181,42 @@
       border-radius:999px;
       background:rgba(255,255,255,.08);
       overflow:hidden;
-      box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);
     }
 
     .progress-bar{
       width:0%;
       height:100%;
+      background:linear-gradient(90deg, var(--accent2), var(--accent));
+      box-shadow:0 0 20px rgba(155,199,255,.45);
       border-radius:999px;
-      background:linear-gradient(90deg, rgba(137,194,255,.55), rgba(137,194,255,1));
-      box-shadow:0 0 18px rgba(137,194,255,.45);
-      transition:width .08s linear;
     }
 
-    .stage{
-      position:relative;
-      flex:1;
+    .center{
+      position:absolute;
+      inset:0;
       display:flex;
       align-items:center;
       justify-content:center;
-      overflow:hidden;
+      padding:120px 40px 130px;
+      z-index:3;
     }
 
-    .pulse-ring{
+    .glow{
       position:absolute;
-      width:340px;
-      height:340px;
+      width:420px;
+      height:420px;
       border-radius:50%;
-      background:radial-gradient(circle, rgba(137,194,255,.18), transparent 65%);
+      background:radial-gradient(circle, rgba(155,199,255,.18), transparent 65%);
       filter:blur(20px);
-      opacity:.6;
-      transform:scale(1);
-      transition:transform .08s linear, opacity .2s linear;
+      opacity:.65;
+      transition:transform .14s linear, opacity .14s linear;
       pointer-events:none;
     }
 
-    .lyrics{
+    .lyrics-stage{
       position:relative;
-      width:min(840px, 92%);
-      min-height:220px;
+      width:min(900px,95%);
+      min-height:240px;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -242,22 +226,20 @@
     .line{
       position:absolute;
       width:100%;
-      padding:0 10px;
-      font-size:clamp(1.7rem, 5.2vw, 4.8rem);
+      font-size:clamp(2rem,5.3vw,5rem);
+      line-height:1.08;
       font-weight:200;
-      line-height:1.12;
-      letter-spacing:-0.04em;
+      letter-spacing:-.04em;
       opacity:0;
       transform:translateY(30px) scale(.98);
-      filter:blur(14px);
+      filter:blur(16px);
       transition:
-        opacity .9s ease,
-        transform .9s cubic-bezier(.19,1,.22,1),
-        filter .9s ease,
-        color .4s ease,
-        text-shadow .4s ease;
-      pointer-events:none;
+        opacity 1s ease,
+        transform 1s cubic-bezier(.19,1,.22,1),
+        filter 1s ease;
+      padding:0 12px;
       text-wrap:balance;
+      pointer-events:none;
     }
 
     .line.active{
@@ -266,24 +248,82 @@
       filter:blur(0);
     }
 
-    .line.fade-out{
-      opacity:0;
-      transform:translateY(-16px) scale(1.01);
-      filter:blur(8px);
-    }
-
     .line.chorus{
-      font-family:'Playfair Display', serif;
+      font-family:'Playfair Display',serif;
       font-style:italic;
       color:var(--accent);
-      text-shadow:
-        0 0 24px rgba(137,194,255,.20),
-        0 0 60px rgba(137,194,255,.12);
+      text-shadow:0 0 30px rgba(155,199,255,.18);
+    }
+
+    .intro{
+      position:absolute;
+      inset:0;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:18px;
+      z-index:6;
+      background:linear-gradient(180deg, rgba(5,7,13,.50), rgba(5,7,13,.30));
+      backdrop-filter:blur(12px);
+      transition:opacity .9s ease, visibility .9s ease;
+    }
+
+    .intro.hidden{
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+    }
+
+    .intro .mini{
+      font-family:'JetBrains Mono',monospace;
+      font-size:11px;
+      color:var(--muted);
+      letter-spacing:2px;
+      text-transform:uppercase;
+    }
+
+    .intro h2{
+      font-size:clamp(2.2rem,5vw,4.8rem);
+      letter-spacing:-.05em;
+      font-weight:800;
+    }
+
+    .intro p{
+      color:var(--muted);
+      font-size:1rem;
+      max-width:560px;
+      text-align:center;
+      line-height:1.7;
+      padding:0 16px;
+    }
+
+    .play-btn{
+      margin-top:8px;
+      width:82px;
+      height:82px;
+      border:none;
+      border-radius:50%;
+      cursor:pointer;
+      background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
+      color:white;
+      font-size:24px;
+      box-shadow:0 12px 40px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.10) inset;
+      transition:transform .2s ease, box-shadow .2s ease;
+    }
+
+    .play-btn:hover{
+      transform:scale(1.05);
+      box-shadow:0 18px 55px rgba(0,0,0,.42), 0 0 25px rgba(155,199,255,.12);
     }
 
     .bottom{
-      position:relative;
-      z-index:2;
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:0;
+      padding:0 28px 28px 28px;
+      z-index:4;
       display:flex;
       align-items:center;
       justify-content:space-between;
@@ -291,58 +331,42 @@
       flex-wrap:wrap;
     }
 
+    .track{
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+    }
+
+    .track strong{
+      font-size:1rem;
+    }
+
+    .track span{
+      color:var(--muted);
+      font-size:.9rem;
+    }
+
     .controls{
+      flex:1;
+      min-width:260px;
       display:flex;
       align-items:center;
       gap:14px;
     }
 
-    .play-btn{
-      width:58px;
-      height:58px;
+    .toggle{
+      width:54px;
+      height:54px;
       border-radius:50%;
-      border:1px solid rgba(255,255,255,.12);
-      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
-      color:white;
-      cursor:pointer;
-      display:grid;
-      place-items:center;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.07);
+      color:#fff;
       font-size:18px;
-      backdrop-filter:blur(10px);
-      box-shadow:0 12px 30px rgba(0,0,0,.25);
-      transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
-    }
-
-    .play-btn:hover{
-      transform:scale(1.04);
-      border-color:rgba(137,194,255,.35);
-      box-shadow:0 0 28px rgba(137,194,255,.15);
-    }
-
-    .meta{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-    }
-
-    .meta strong{
-      font-size:.96rem;
-    }
-
-    .meta span{
-      color:var(--muted);
-      font-size:.84rem;
+      cursor:pointer;
+      backdrop-filter:blur(8px);
     }
 
     .seek{
-      flex:1;
-      min-width:240px;
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
-
-    .seek input[type="range"]{
       -webkit-appearance:none;
       appearance:none;
       width:100%;
@@ -353,37 +377,14 @@
       cursor:pointer;
     }
 
-    .seek input[type="range"]::-webkit-slider-thumb{
+    .seek::-webkit-slider-thumb{
       -webkit-appearance:none;
       appearance:none;
       width:14px;
       height:14px;
       border-radius:50%;
-      background:#fff;
-      box-shadow:0 0 0 4px rgba(137,194,255,.18);
-    }
-
-    .hint{
-      position:absolute;
-      left:50%;
-      bottom:95px;
-      transform:translateX(-50%);
-      z-index:22;
-      font-size:.85rem;
-      color:rgba(255,255,255,.58);
-      padding:10px 16px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.09);
-      border-radius:999px;
-      backdrop-filter:blur(10px);
-      opacity:1;
-      transition:opacity .5s ease, transform .5s ease;
-    }
-
-    .hint.hide{
-      opacity:0;
-      transform:translateX(-50%) translateY(8px);
-      pointer-events:none;
+      background:white;
+      box-shadow:0 0 0 4px rgba(155,199,255,.18);
     }
 
     audio{
@@ -393,8 +394,6 @@
     @media (max-width: 768px){
       .hud{
         font-size:8px;
-        letter-spacing:1px;
-        padding:0;
       }
 
       .hud.left{
@@ -407,15 +406,14 @@
         bottom:16px;
       }
 
-      .main{
-        width:94vw;
-        height:82vh;
-        padding:18px;
+      .panel{
         border-radius:22px;
       }
 
-      .topbar, .bottom{
-        gap:14px;
+      .top{
+        padding:20px 20px 0 20px;
+        flex-direction:column;
+        align-items:flex-start;
       }
 
       .progress-wrap{
@@ -423,222 +421,216 @@
         align-items:flex-start;
       }
 
+      .center{
+        padding:140px 20px 140px;
+      }
+
       .bottom{
+        padding:0 20px 20px 20px;
         flex-direction:column;
         align-items:stretch;
       }
 
-      .seek{
-        min-width:0;
-      }
-
-      .pulse-ring{
-        width:260px;
-        height:260px;
+      .glow{
+        width:280px;
+        height:280px;
       }
     }
   </style>
 </head>
 <body>
-
-  <canvas id="stars"></canvas>
-  <div class="noise"></div>
-  <div class="scanlines"></div>
+  <canvas id="bg"></canvas>
+  <div class="grain"></div>
   <div class="vignette"></div>
 
   <div class="hud left">
     SIGNAL_ID: OK_COMPUTER<br>
     TRACK_05: LET_DOWN<br>
-    SENSITIVITY: HIGH
+    MOOD: MELANCHOLIC
   </div>
 
   <div class="hud right">
-    "ONE DAY I AM GONNA GROW WINGS"<br>
-    IMMERSIVE_SYNC_MODE
+    VISUAL_SYNC: ENABLED<br>
+    AUDIO_OFFSET: CUSTOM
   </div>
 
-  <div class="main">
-    <div class="topbar">
-      <div class="title">
-        <div class="tag">Radiohead Experience</div>
-        <h1>Let Down</h1>
-        <p>Uma experiência visual sincronizada com a música</p>
-      </div>
+  <div class="app">
+    <div class="panel">
+      <div class="top">
+        <div class="title">
+          <small>Radiohead Experience</small>
+          <h1>Let Down</h1>
+          <p>Uma experiência visual mais bonita e sincronizada com o começo real da voz.</p>
+        </div>
 
-      <div class="progress-wrap">
-        <div class="timer" id="timer">00:00 / 00:00</div>
-        <div class="progress">
-          <div class="progress-bar" id="progressBar"></div>
+        <div class="progress-wrap">
+          <div class="time" id="time">00:00 / 00:00</div>
+          <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="stage">
-      <div class="pulse-ring" id="pulseRing"></div>
+      <div class="center">
+        <div class="glow" id="glow"></div>
 
-      <div class="lyrics">
-        <p class="line" data-start="0.00" data-end="5.20">Transport, motorways and tramlines</p>
-        <p class="line" data-start="5.25" data-end="9.90">Starting and then stopping</p>
-        <p class="line" data-start="10.00" data-end="14.80">Taking off and landing</p>
-        <p class="line" data-start="14.90" data-end="20.80">The emptiest of feelings</p>
+        <div class="lyrics-stage">
+          <p class="line" data-start="0.0" data-end="5.0">Transport, motorways and tramlines</p>
+          <p class="line" data-start="5.1" data-end="9.6">Starting and then stopping</p>
+          <p class="line" data-start="9.7" data-end="14.3">Taking off and landing</p>
+          <p class="line" data-start="14.4" data-end="20.0">The emptiest of feelings</p>
 
-        <p class="line" data-start="21.00" data-end="25.70">Disappointed people</p>
-        <p class="line" data-start="25.80" data-end="31.50">Clinging onto bottles</p>
-        <p class="line" data-start="31.60" data-end="37.60">And when it comes it's so, so disappointing</p>
-        <p class="line" data-start="37.70" data-end="43.20">Let down and hanging around</p>
+          <p class="line" data-start="20.1" data-end="24.6">Disappointed people</p>
+          <p class="line" data-start="24.7" data-end="30.0">Clinging onto bottles</p>
+          <p class="line" data-start="30.1" data-end="36.9">And when it comes it's so, so disappointing</p>
 
-        <p class="line chorus" data-start="43.30" data-end="49.60">Crushed like a bug in the ground</p>
-        <p class="line chorus" data-start="49.70" data-end="56.20">Let down and hanging around</p>
+          <p class="line chorus" data-start="37.0" data-end="43.0">Let down and hanging around</p>
+          <p class="line chorus" data-start="43.1" data-end="49.5">Crushed like a bug in the ground</p>
+          <p class="line chorus" data-start="49.6" data-end="56.2">Let down and hanging around</p>
 
-        <p class="line" data-start="62.80" data-end="67.20">Shell smashed, juices flowing</p>
-        <p class="line" data-start="67.30" data-end="72.70">Wings twitch, legs are going</p>
-        <p class="line" data-start="72.80" data-end="78.20">Don't get sentimental</p>
-        <p class="line" data-start="78.30" data-end="84.60">It always ends up drivel</p>
+          <p class="line" data-start="62.5" data-end="67.0">Shell smashed, juices flowing</p>
+          <p class="line" data-start="67.1" data-end="72.2">Wings twitch, legs are going</p>
+          <p class="line" data-start="72.3" data-end="77.5">Don't get sentimental</p>
+          <p class="line" data-start="77.6" data-end="83.8">It always ends up drivel</p>
 
-        <p class="line" data-start="84.70" data-end="89.60">One day I am gonna grow wings</p>
-        <p class="line chorus" data-start="89.70" data-end="95.70">A chemical reaction</p>
-        <p class="line chorus" data-start="95.80" data-end="101.90">Hysterical and useless</p>
-        <p class="line chorus" data-start="102.00" data-end="108.40">Hysterical and...</p>
+          <p class="line chorus" data-start="84.0" data-end="89.5">One day I am gonna grow wings</p>
+          <p class="line chorus" data-start="89.6" data-end="95.2">A chemical reaction</p>
+          <p class="line chorus" data-start="95.3" data-end="101.4">Hysterical and useless</p>
 
-        <p class="line" data-start="109.20" data-end="114.80">Let down and hanging around</p>
-        <p class="line chorus" data-start="114.90" data-end="121.20">Crushed like a bug in the ground</p>
-        <p class="line chorus" data-start="121.30" data-end="128.20">Let down and hanging around</p>
+          <p class="line chorus" data-start="108.0" data-end="114.2">Let down and hanging around</p>
+          <p class="line chorus" data-start="114.3" data-end="120.8">Crushed like a bug in the ground</p>
+          <p class="line chorus" data-start="120.9" data-end="127.6">Let down and hanging around</p>
 
-        <p class="line" data-start="128.30" data-end="134.40">You know, you know where you are with</p>
-        <p class="line" data-start="134.50" data-end="140.80">You know where you are with</p>
-        <p class="line chorus" data-start="140.90" data-end="149.50">Floor collapsing, floating</p>
-        <p class="line chorus" data-start="149.60" data-end="159.00">Bouncing back and one day I am gonna grow wings</p>
+          <p class="line" data-start="127.7" data-end="133.9">You know, you know where you are with</p>
+          <p class="line" data-start="134.0" data-end="139.4">You know where you are with</p>
+          <p class="line chorus" data-start="139.5" data-end="148.6">Floor collapsing, floating</p>
+          <p class="line chorus" data-start="148.7" data-end="158.5">Bouncing back and one day I am gonna grow wings</p>
+        </div>
       </div>
-    </div>
 
-    <div class="bottom">
-      <div class="controls">
-        <button class="play-btn" id="playBtn" aria-label="Tocar música">▶</button>
-        <div class="meta">
+      <div class="intro" id="intro">
+        <div class="mini">Press play</div>
+        <h2>Let Down</h2>
+        <p>
+          Agora a letra não começa mais no instrumental. Ela aparece só quando a voz entra.
+          Se precisar, ajuste apenas o valor do <strong>VOCAL_OFFSET</strong> no JavaScript.
+        </p>
+        <button class="play-btn" id="playMain">▶</button>
+      </div>
+
+      <div class="bottom">
+        <div class="track">
           <strong>Let Down</strong>
           <span>Radiohead • OK Computer</span>
         </div>
-      </div>
 
-      <div class="seek">
-        <input type="range" id="seekBar" min="0" max="1000" value="0">
+        <div class="controls">
+          <button class="toggle" id="toggleBtn">▶</button>
+          <input class="seek" id="seek" type="range" min="0" max="1000" value="0">
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="hint" id="hint">clique em play para começar a experiência</div>
-
   <audio id="music" preload="auto">
-    <source src="letdown.mp3" type="audio/mpeg">
+    <source src="./letdown.mp3" type="audio/mpeg">
   </audio>
 
   <script>
-    const canvas = document.getElementById("stars");
-    const ctx = canvas.getContext("2d");
+    const VOCAL_OFFSET = 52.0;
 
     const music = document.getElementById("music");
-    const playBtn = document.getElementById("playBtn");
     const lines = [...document.querySelectorAll(".line")];
+    const intro = document.getElementById("intro");
+    const playMain = document.getElementById("playMain");
+    const toggleBtn = document.getElementById("toggleBtn");
+    const seek = document.getElementById("seek");
     const progressBar = document.getElementById("progressBar");
-    const timer = document.getElementById("timer");
-    const seekBar = document.getElementById("seekBar");
-    const pulseRing = document.getElementById("pulseRing");
-    const hint = document.getElementById("hint");
+    const timeEl = document.getElementById("time");
+    const glow = document.getElementById("glow");
+
+    const canvas = document.getElementById("bg");
+    const ctx = canvas.getContext("2d");
 
     let stars = [];
-    let audioCtx, analyser, sourceNode, frequencyData;
-    let smoothedEnergy = 0;
     let animationStarted = false;
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      createStars();
+    let audioCtx, analyser, sourceNode, freqData;
+    let energy = 0;
+
+    function setupAudio() {
+      if (audioCtx) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+      freqData = new Uint8Array(analyser.frequencyBinCount);
+
+      sourceNode = audioCtx.createMediaElementSource(music);
+      sourceNode.connect(analyser);
+      analyser.connect(audioCtx.destination);
     }
 
-    function createStars() {
-      const amount = Math.min(220, Math.floor((window.innerWidth * window.innerHeight) / 7000));
-      stars = [];
-
-      for (let i = 0; i < amount; i++) {
-        stars.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          z: Math.random() * canvas.width,
-          size: Math.random() * 1.8 + 0.3,
-          speed: Math.random() * 0.7 + 0.25
-        });
-      }
-    }
-
-    function drawBackground() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      bg.addColorStop(0, "rgba(4,5,10,0.25)");
-      bg.addColorStop(1, "rgba(4,5,10,0.75)");
-      ctx.fillStyle = bg;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
-
-      for (const s of stars) {
-        s.z -= s.speed + smoothedEnergy * 8;
-        if (s.z <= 1) {
-          s.x = Math.random() * canvas.width;
-          s.y = Math.random() * canvas.height;
-          s.z = canvas.width;
+    async function playMusic() {
+      try {
+        setupAudio();
+        if (audioCtx.state === "suspended") {
+          await audioCtx.resume();
         }
+        await music.play();
+        intro.classList.add("hidden");
+        toggleBtn.textContent = "❚❚";
 
-        const k = canvas.width / s.z;
-        const x = (s.x - centerX) * k + centerX;
-        const y = (s.y - centerY) * k + centerY;
-        const radius = s.size * (1.2 - s.z / canvas.width) * 1.5;
-
-        if (x < -50 || x > canvas.width + 50 || y < -50 || y > canvas.height + 50) continue;
-
-        ctx.beginPath();
-        ctx.fillStyle = `rgba(137,194,255,${0.15 + (1 - s.z / canvas.width) * 0.9})`;
-        ctx.arc(x, y, Math.max(0.2, radius), 0, Math.PI * 2);
-        ctx.fill();
+        if (!animationStarted) {
+          animationStarted = true;
+          animate();
+        }
+      } catch (e) {
+        console.error(e);
       }
-
-      const glow = ctx.createRadialGradient(
-        canvas.width / 2,
-        canvas.height / 2,
-        0,
-        canvas.width / 2,
-        canvas.height / 2,
-        Math.max(canvas.width, canvas.height) * 0.45
-      );
-      glow.addColorStop(0, `rgba(137,194,255,${0.06 + smoothedEnergy * 0.22})`);
-      glow.addColorStop(1, "rgba(137,194,255,0)");
-      ctx.fillStyle = glow;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
+
+    function toggleMusic() {
+      if (music.paused) {
+        playMusic();
+      } else {
+        music.pause();
+        toggleBtn.textContent = "▶";
+      }
+    }
+
+    playMain.addEventListener("click", playMusic);
+    toggleBtn.addEventListener("click", toggleMusic);
+
+    music.addEventListener("pause", () => {
+      toggleBtn.textContent = "▶";
+    });
+
+    music.addEventListener("play", () => {
+      toggleBtn.textContent = "❚❚";
+    });
 
     function formatTime(sec) {
       if (!isFinite(sec)) return "00:00";
       const m = Math.floor(sec / 60);
       const s = Math.floor(sec % 60);
-      return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+      return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
     }
 
-    function updateLyrics(currentTime) {
+    function getLyricTime() {
+      return music.currentTime - VOCAL_OFFSET;
+    }
+
+    function updateLyrics() {
+      const lyricTime = getLyricTime();
+
       lines.forEach(line => {
         const start = parseFloat(line.dataset.start);
         const end = parseFloat(line.dataset.end);
-        const fadeWindow = 0.55;
 
-        line.classList.remove("active", "fade-out");
-
-        if (currentTime >= start && currentTime <= end) {
+        if (lyricTime >= start && lyricTime <= end) {
           line.classList.add("active");
-
-          if (end - currentTime <= fadeWindow) {
-            line.classList.add("fade-out");
-          }
+        } else {
+          line.classList.remove("active");
         }
       });
     }
@@ -650,109 +642,111 @@
       if (duration > 0) {
         const percent = (current / duration) * 100;
         progressBar.style.width = percent + "%";
-        seekBar.value = Math.floor((current / duration) * 1000);
+        seek.value = Math.floor((current / duration) * 1000);
       }
 
-      timer.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
+      timeEl.textContent = `${formatTime(current)} / ${formatTime(duration)}`;
     }
 
-    function setupAudioReactive() {
-      if (audioCtx) return;
+    seek.addEventListener("input", () => {
+      if (!music.duration) return;
+      music.currentTime = (seek.value / 1000) * music.duration;
+      updateLyrics();
+      updateProgress();
+    });
 
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      analyser = audioCtx.createAnalyser();
-      analyser.fftSize = 256;
-      frequencyData = new Uint8Array(analyser.frequencyBinCount);
-
-      sourceNode = audioCtx.createMediaElementSource(music);
-      sourceNode.connect(analyser);
-      analyser.connect(audioCtx.destination);
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      createStars();
     }
 
-    function getAudioEnergy() {
+    function createStars() {
+      const total = Math.min(240, Math.floor((window.innerWidth * window.innerHeight) / 8000));
+      stars = [];
+
+      for (let i = 0; i < total; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          z: Math.random() * canvas.width,
+          size: Math.random() * 1.8 + 0.2,
+          speed: Math.random() * 0.5 + 0.15
+        });
+      }
+    }
+
+    function getEnergy() {
       if (!analyser || music.paused) {
-        smoothedEnergy *= 0.92;
+        energy *= 0.94;
         return;
       }
 
-      analyser.getByteFrequencyData(frequencyData);
+      analyser.getByteFrequencyData(freqData);
       let sum = 0;
+      for (let i = 0; i < freqData.length; i++) {
+        sum += freqData[i];
+      }
+      const avg = sum / freqData.length / 255;
+      energy = energy * 0.88 + avg * 0.12;
+    }
 
-      for (let i = 0; i < frequencyData.length; i++) {
-        sum += frequencyData[i];
+    function drawBackground() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      grad.addColorStop(0, "rgba(6,10,18,.20)");
+      grad.addColorStop(1, "rgba(5,7,13,.65)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+
+      for (const s of stars) {
+        s.z -= s.speed + energy * 4;
+
+        if (s.z <= 1) {
+          s.x = Math.random() * canvas.width;
+          s.y = Math.random() * canvas.height;
+          s.z = canvas.width;
+        }
+
+        const k = canvas.width / s.z;
+        const x = (s.x - cx) * k + cx;
+        const y = (s.y - cy) * k + cy;
+        const radius = s.size * (1.2 - s.z / canvas.width) * 1.7;
+
+        if (x < -50 || x > canvas.width + 50 || y < -50 || y > canvas.height + 50) continue;
+
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(155,199,255,${0.12 + (1 - s.z / canvas.width) * 0.85})`;
+        ctx.arc(x, y, Math.max(.2, radius), 0, Math.PI * 2);
+        ctx.fill();
       }
 
-      const avg = sum / frequencyData.length / 255;
-      smoothedEnergy = smoothedEnergy * 0.86 + avg * 0.14;
+      const glowBg = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(canvas.width, canvas.height) * 0.4);
+      glowBg.addColorStop(0, `rgba(110,168,255,${0.05 + energy * 0.15})`);
+      glowBg.addColorStop(1, "rgba(110,168,255,0)");
+      ctx.fillStyle = glowBg;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
     function animate() {
-      getAudioEnergy();
+      getEnergy();
       drawBackground();
-      updateLyrics(music.currentTime || 0);
+      updateLyrics();
       updateProgress();
 
-      const scale = 1 + smoothedEnergy * 0.55;
-      const opacity = 0.35 + smoothedEnergy * 0.9;
-      pulseRing.style.transform = `scale(${scale})`;
-      pulseRing.style.opacity = opacity;
+      glow.style.transform = `scale(${1 + energy * 0.45})`;
+      glow.style.opacity = 0.45 + energy * 0.55;
 
       requestAnimationFrame(animate);
     }
 
-    async function togglePlay() {
-      try {
-        setupAudioReactive();
-
-        if (audioCtx.state === "suspended") {
-          await audioCtx.resume();
-        }
-
-        if (music.paused) {
-          await music.play();
-          playBtn.textContent = "❚❚";
-          hint.classList.add("hide");
-        } else {
-          music.pause();
-          playBtn.textContent = "▶";
-        }
-
-        if (!animationStarted) {
-          animationStarted = true;
-          animate();
-        }
-      } catch (err) {
-        console.error("Erro ao tocar áudio:", err);
-      }
-    }
-
-    playBtn.addEventListener("click", togglePlay);
-
-    music.addEventListener("play", () => {
-      playBtn.textContent = "❚❚";
-      hint.classList.add("hide");
-    });
-
-    music.addEventListener("pause", () => {
-      playBtn.textContent = "▶";
-    });
-
-    music.addEventListener("ended", () => {
-      playBtn.textContent = "▶";
-      seekBar.value = 0;
-    });
-
     music.addEventListener("loadedmetadata", updateProgress);
     music.addEventListener("timeupdate", () => {
-      updateLyrics(music.currentTime);
-      updateProgress();
-    });
-
-    seekBar.addEventListener("input", () => {
-      if (!music.duration) return;
-      const time = (seekBar.value / 1000) * music.duration;
-      music.currentTime = time;
-      updateLyrics(time);
+      updateLyrics();
       updateProgress();
     });
 
@@ -760,7 +754,7 @@
 
     resizeCanvas();
     updateProgress();
-    updateLyrics(0);
+    updateLyrics();
   </script>
 </body>
 </html>
