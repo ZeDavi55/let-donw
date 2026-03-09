@@ -5,19 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Let Down — Radiohead</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600;800&family=Playfair+Display:ital,wght@1,500;1,700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;700;900&family=Playfair+Display:ital,wght@1,500;1,700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --bg:#05070d;
-      --bg2:#0a1220;
-      --text:#eef3ff;
-      --muted:rgba(255,255,255,.55);
+      --bg:#04050a;
+      --bg2:#0b1020;
+      --text:#f5f7ff;
+      --muted:rgba(255,255,255,.58);
       --line:rgba(255,255,255,.10);
+      --accent:#9ed0ff;
+      --accent-2:#72a9ff;
       --glass:rgba(255,255,255,.06);
-      --accent:#9bc7ff;
-      --accent2:#6ea8ff;
-      --shadow:0 20px 80px rgba(0,0,0,.45);
     }
 
     *{
@@ -30,12 +29,12 @@
       width:100%;
       height:100%;
       overflow:hidden;
+      font-family:'Inter',sans-serif;
       background:
-        radial-gradient(circle at 20% 20%, rgba(110,168,255,.10), transparent 20%),
-        radial-gradient(circle at 80% 30%, rgba(155,199,255,.08), transparent 22%),
+        radial-gradient(circle at 20% 20%, rgba(114,169,255,.10), transparent 20%),
+        radial-gradient(circle at 80% 30%, rgba(158,208,255,.07), transparent 25%),
         linear-gradient(180deg, var(--bg2), var(--bg));
       color:var(--text);
-      font-family:'Inter',sans-serif;
     }
 
     body{
@@ -45,8 +44,6 @@
     canvas{
       position:fixed;
       inset:0;
-      width:100%;
-      height:100%;
       z-index:0;
     }
 
@@ -59,14 +56,14 @@
 
     .grain{
       z-index:1;
-      opacity:.05;
-      background-image: radial-gradient(circle, rgba(255,255,255,.55) .7px, transparent .8px);
-      background-size: 9px 9px;
+      opacity:.04;
+      background-image: radial-gradient(circle, rgba(255,255,255,.5) .7px, transparent .8px);
+      background-size:8px 8px;
     }
 
     .vignette{
       z-index:2;
-      background: radial-gradient(circle, transparent 35%, rgba(0,0,0,.55) 100%);
+      background:radial-gradient(circle, transparent 35%, rgba(0,0,0,.55) 100%);
     }
 
     .hud{
@@ -74,21 +71,21 @@
       z-index:5;
       font-family:'JetBrains Mono',monospace;
       font-size:10px;
-      color:rgba(155,199,255,.75);
       letter-spacing:2px;
       text-transform:uppercase;
+      color:rgba(158,208,255,.7);
       line-height:1.8;
       user-select:none;
     }
 
     .hud.left{
-      top:24px;
-      left:24px;
+      top:22px;
+      left:22px;
     }
 
     .hud.right{
-      right:24px;
-      bottom:24px;
+      right:22px;
+      bottom:22px;
       text-align:right;
     }
 
@@ -100,29 +97,19 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:22px;
+      padding:20px;
     }
 
     .panel{
+      width:min(1100px,95vw);
+      height:min(760px,92vh);
       position:relative;
-      width:min(1100px, 95vw);
-      height:min(760px, 92vh);
-      border:1px solid var(--line);
       border-radius:30px;
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      backdrop-filter:blur(20px);
-      box-shadow:var(--shadow);
       overflow:hidden;
-    }
-
-    .panel::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,.07), transparent 30%),
-        linear-gradient(315deg, rgba(155,199,255,.05), transparent 35%);
-      pointer-events:none;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      backdrop-filter:blur(18px);
+      box-shadow:0 20px 80px rgba(0,0,0,.45);
     }
 
     .top{
@@ -130,41 +117,41 @@
       top:0;
       left:0;
       right:0;
-      padding:28px 28px 0 28px;
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:20px;
       z-index:4;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:20px;
+      padding:28px 28px 0 28px;
     }
 
     .title small{
       display:block;
+      color:var(--muted);
       font-size:11px;
       text-transform:uppercase;
       letter-spacing:2px;
-      color:var(--muted);
       margin-bottom:10px;
     }
 
     .title h1{
       font-size:clamp(2rem,4vw,3.4rem);
-      font-weight:800;
-      letter-spacing:-.04em;
+      letter-spacing:-.05em;
+      font-weight:900;
     }
 
     .title p{
       margin-top:8px;
       color:var(--muted);
-      font-size:.98rem;
+      font-size:.95rem;
     }
 
     .progress-wrap{
-      width:min(300px,40vw);
+      width:min(300px,38vw);
       display:flex;
       flex-direction:column;
-      gap:10px;
       align-items:flex-end;
+      gap:8px;
       padding-top:8px;
     }
 
@@ -172,50 +159,49 @@
       font-family:'JetBrains Mono',monospace;
       font-size:11px;
       color:var(--muted);
-      letter-spacing:1px;
     }
 
     .progress{
       width:100%;
       height:8px;
       border-radius:999px;
-      background:rgba(255,255,255,.08);
       overflow:hidden;
+      background:rgba(255,255,255,.08);
     }
 
     .progress-bar{
       width:0%;
       height:100%;
-      background:linear-gradient(90deg, var(--accent2), var(--accent));
-      box-shadow:0 0 20px rgba(155,199,255,.45);
       border-radius:999px;
+      background:linear-gradient(90deg, var(--accent-2), var(--accent));
+      box-shadow:0 0 20px rgba(158,208,255,.45);
     }
 
     .center{
       position:absolute;
       inset:0;
+      z-index:3;
       display:flex;
       align-items:center;
       justify-content:center;
       padding:120px 40px 130px;
-      z-index:3;
     }
 
-    .glow{
+    .orb{
       position:absolute;
-      width:420px;
-      height:420px;
+      width:380px;
+      height:380px;
       border-radius:50%;
-      background:radial-gradient(circle, rgba(155,199,255,.18), transparent 65%);
+      background:radial-gradient(circle, rgba(158,208,255,.18), transparent 65%);
       filter:blur(20px);
-      opacity:.65;
-      transition:transform .14s linear, opacity .14s linear;
+      opacity:.55;
+      transition:transform .12s linear, opacity .12s linear;
       pointer-events:none;
     }
 
     .lyrics-stage{
       position:relative;
-      width:min(900px,95%);
+      width:min(920px,95%);
       min-height:240px;
       display:flex;
       align-items:center;
@@ -226,18 +212,19 @@
     .line{
       position:absolute;
       width:100%;
+      padding:0 12px;
       font-size:clamp(2rem,5.3vw,5rem);
       line-height:1.08;
-      font-weight:200;
       letter-spacing:-.04em;
+      font-weight:200;
       opacity:0;
-      transform:translateY(30px) scale(.98);
-      filter:blur(16px);
+      transform:translateY(35px) scale(.96);
+      filter:blur(14px);
       transition:
-        opacity 1s ease,
-        transform 1s cubic-bezier(.19,1,.22,1),
-        filter 1s ease;
-      padding:0 12px;
+        opacity .9s ease,
+        transform .9s cubic-bezier(.19,1,.22,1),
+        filter .9s ease,
+        text-shadow .5s ease;
       text-wrap:balance;
       pointer-events:none;
     }
@@ -246,27 +233,43 @@
       opacity:1;
       transform:translateY(0) scale(1);
       filter:blur(0);
+      text-shadow:0 0 18px rgba(255,255,255,.08);
+    }
+
+    .line.exit{
+      opacity:0;
+      transform:translateY(-18px) scale(1.02);
+      filter:blur(8px);
     }
 
     .line.chorus{
       font-family:'Playfair Display',serif;
       font-style:italic;
       color:var(--accent);
-      text-shadow:0 0 30px rgba(155,199,255,.18);
+      text-shadow:
+        0 0 20px rgba(158,208,255,.22),
+        0 0 45px rgba(158,208,255,.14);
+    }
+
+    .line.emphasis{
+      transform:translateY(0) scale(1.04);
+      text-shadow:
+        0 0 30px rgba(158,208,255,.18),
+        0 0 60px rgba(158,208,255,.10);
     }
 
     .intro{
       position:absolute;
       inset:0;
+      z-index:6;
       display:flex;
       flex-direction:column;
       align-items:center;
       justify-content:center;
       gap:18px;
-      z-index:6;
-      background:linear-gradient(180deg, rgba(5,7,13,.50), rgba(5,7,13,.30));
-      backdrop-filter:blur(12px);
-      transition:opacity .9s ease, visibility .9s ease;
+      background:linear-gradient(180deg, rgba(4,5,10,.55), rgba(4,5,10,.28));
+      backdrop-filter:blur(10px);
+      transition:opacity .8s ease, visibility .8s ease;
     }
 
     .intro.hidden{
@@ -278,43 +281,41 @@
     .intro .mini{
       font-family:'JetBrains Mono',monospace;
       font-size:11px;
-      color:var(--muted);
       letter-spacing:2px;
       text-transform:uppercase;
+      color:var(--muted);
     }
 
     .intro h2{
       font-size:clamp(2.2rem,5vw,4.8rem);
+      font-weight:900;
       letter-spacing:-.05em;
-      font-weight:800;
     }
 
     .intro p{
-      color:var(--muted);
-      font-size:1rem;
       max-width:560px;
       text-align:center;
+      color:var(--muted);
       line-height:1.7;
       padding:0 16px;
     }
 
     .play-btn{
-      margin-top:8px;
       width:82px;
       height:82px;
-      border:none;
       border-radius:50%;
+      border:none;
       cursor:pointer;
-      background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
       color:white;
       font-size:24px;
-      box-shadow:0 12px 40px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.10) inset;
+      background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.05));
+      box-shadow:0 12px 40px rgba(0,0,0,.35);
       transition:transform .2s ease, box-shadow .2s ease;
     }
 
     .play-btn:hover{
       transform:scale(1.05);
-      box-shadow:0 18px 55px rgba(0,0,0,.42), 0 0 25px rgba(155,199,255,.12);
+      box-shadow:0 16px 50px rgba(0,0,0,.42), 0 0 25px rgba(158,208,255,.14);
     }
 
     .bottom{
@@ -322,13 +323,13 @@
       left:0;
       right:0;
       bottom:0;
-      padding:0 28px 28px 28px;
       z-index:4;
       display:flex;
-      align-items:center;
       justify-content:space-between;
+      align-items:center;
       gap:18px;
       flex-wrap:wrap;
+      padding:0 28px 28px 28px;
     }
 
     .track{
@@ -360,10 +361,9 @@
       border-radius:50%;
       border:1px solid rgba(255,255,255,.10);
       background:rgba(255,255,255,.07);
-      color:#fff;
+      color:white;
       font-size:18px;
       cursor:pointer;
-      backdrop-filter:blur(8px);
     }
 
     .seek{
@@ -383,27 +383,27 @@
       width:14px;
       height:14px;
       border-radius:50%;
-      background:white;
-      box-shadow:0 0 0 4px rgba(155,199,255,.18);
+      background:#fff;
+      box-shadow:0 0 0 4px rgba(158,208,255,.18);
     }
 
     audio{
       display:none;
     }
 
-    @media (max-width: 768px){
+    @media (max-width:768px){
       .hud{
         font-size:8px;
       }
 
       .hud.left{
-        top:16px;
-        left:16px;
+        top:14px;
+        left:14px;
       }
 
       .hud.right{
-        right:16px;
-        bottom:16px;
+        right:14px;
+        bottom:14px;
       }
 
       .panel{
@@ -411,9 +411,9 @@
       }
 
       .top{
-        padding:20px 20px 0 20px;
         flex-direction:column;
         align-items:flex-start;
+        padding:20px 20px 0 20px;
       }
 
       .progress-wrap{
@@ -431,9 +431,9 @@
         align-items:stretch;
       }
 
-      .glow{
-        width:280px;
-        height:280px;
+      .orb{
+        width:260px;
+        height:260px;
       }
     }
   </style>
@@ -446,12 +446,12 @@
   <div class="hud left">
     SIGNAL_ID: OK_COMPUTER<br>
     TRACK_05: LET_DOWN<br>
-    MOOD: MELANCHOLIC
+    VISUAL_MODE: DREAMLIKE
   </div>
 
   <div class="hud right">
-    VISUAL_SYNC: ENABLED<br>
-    AUDIO_OFFSET: CUSTOM
+    LYRIC_SYNC: ACTIVE<br>
+    AUDIO_REACTIVE: ON
   </div>
 
   <div class="app">
@@ -460,7 +460,7 @@
         <div class="title">
           <small>Radiohead Experience</small>
           <h1>Let Down</h1>
-          <p>Uma experiência visual mais bonita e sincronizada com o começo real da voz.</p>
+          <p>Letras sincronizadas com efeitos suaves e visual mais bonito.</p>
         </div>
 
         <div class="progress-wrap">
@@ -472,39 +472,39 @@
       </div>
 
       <div class="center">
-        <div class="glow" id="glow"></div>
+        <div class="orb" id="orb"></div>
 
         <div class="lyrics-stage">
-          <p class="line" data-start="0.0" data-end="5.0">Transport, motorways and tramlines</p>
-          <p class="line" data-start="5.1" data-end="9.6">Starting and then stopping</p>
-          <p class="line" data-start="9.7" data-end="14.3">Taking off and landing</p>
-          <p class="line" data-start="14.4" data-end="20.0">The emptiest of feelings</p>
+          <p class="line" data-start="0.0" data-end="5.1">Transport, motorways and tramlines</p>
+          <p class="line" data-start="5.2" data-end="9.7">Starting and then stopping</p>
+          <p class="line" data-start="9.8" data-end="14.4">Taking off and landing</p>
+          <p class="line" data-start="14.5" data-end="20.2">The emptiest of feelings</p>
 
-          <p class="line" data-start="20.1" data-end="24.6">Disappointed people</p>
-          <p class="line" data-start="24.7" data-end="30.0">Clinging onto bottles</p>
-          <p class="line" data-start="30.1" data-end="36.9">And when it comes it's so, so disappointing</p>
+          <p class="line" data-start="20.3" data-end="24.8">Disappointed people</p>
+          <p class="line" data-start="24.9" data-end="30.3">Clinging onto bottles</p>
+          <p class="line" data-start="30.4" data-end="37.1">And when it comes it's so, so disappointing</p>
 
-          <p class="line chorus" data-start="37.0" data-end="43.0">Let down and hanging around</p>
-          <p class="line chorus" data-start="43.1" data-end="49.5">Crushed like a bug in the ground</p>
-          <p class="line chorus" data-start="49.6" data-end="56.2">Let down and hanging around</p>
+          <p class="line chorus" data-start="37.2" data-end="43.0">Let down and hanging around</p>
+          <p class="line chorus" data-start="43.1" data-end="49.3">Crushed like a bug in the ground</p>
+          <p class="line chorus" data-start="49.4" data-end="56.2">Let down and hanging around</p>
 
           <p class="line" data-start="62.5" data-end="67.0">Shell smashed, juices flowing</p>
           <p class="line" data-start="67.1" data-end="72.2">Wings twitch, legs are going</p>
-          <p class="line" data-start="72.3" data-end="77.5">Don't get sentimental</p>
-          <p class="line" data-start="77.6" data-end="83.8">It always ends up drivel</p>
+          <p class="line" data-start="72.3" data-end="77.6">Don't get sentimental</p>
+          <p class="line" data-start="77.7" data-end="83.8">It always ends up drivel</p>
 
-          <p class="line chorus" data-start="84.0" data-end="89.5">One day I am gonna grow wings</p>
-          <p class="line chorus" data-start="89.6" data-end="95.2">A chemical reaction</p>
-          <p class="line chorus" data-start="95.3" data-end="101.4">Hysterical and useless</p>
+          <p class="line chorus" data-start="84.0" data-end="89.6">One day I am gonna grow wings</p>
+          <p class="line chorus" data-start="89.7" data-end="95.3">A chemical reaction</p>
+          <p class="line chorus" data-start="95.4" data-end="101.5">Hysterical and useless</p>
 
           <p class="line chorus" data-start="108.0" data-end="114.2">Let down and hanging around</p>
-          <p class="line chorus" data-start="114.3" data-end="120.8">Crushed like a bug in the ground</p>
-          <p class="line chorus" data-start="120.9" data-end="127.6">Let down and hanging around</p>
+          <p class="line chorus" data-start="114.3" data-end="120.7">Crushed like a bug in the ground</p>
+          <p class="line chorus" data-start="120.8" data-end="127.5">Let down and hanging around</p>
 
-          <p class="line" data-start="127.7" data-end="133.9">You know, you know where you are with</p>
+          <p class="line" data-start="127.6" data-end="133.9">You know, you know where you are with</p>
           <p class="line" data-start="134.0" data-end="139.4">You know where you are with</p>
-          <p class="line chorus" data-start="139.5" data-end="148.6">Floor collapsing, floating</p>
-          <p class="line chorus" data-start="148.7" data-end="158.5">Bouncing back and one day I am gonna grow wings</p>
+          <p class="line chorus" data-start="139.5" data-end="148.5">Floor collapsing, floating</p>
+          <p class="line chorus" data-start="148.6" data-end="158.5">Bouncing back and one day I am gonna grow wings</p>
         </div>
       </div>
 
@@ -512,8 +512,8 @@
         <div class="mini">Press play</div>
         <h2>Let Down</h2>
         <p>
-          Agora a letra não começa mais no instrumental. Ela aparece só quando a voz entra.
-          Se precisar, ajuste apenas o valor do <strong>VOCAL_OFFSET</strong> no JavaScript.
+          Agora a letra aparece com animação e glow.  
+          Para ajustar o começo, mude só o valor de <strong>VOCAL_OFFSET</strong>.
         </p>
         <button class="play-btn" id="playMain">▶</button>
       </div>
@@ -537,7 +537,10 @@
   </audio>
 
   <script>
-    const VOCAL_OFFSET = 52.0;
+    // AJUSTE AQUI SE PRECISAR
+    // Se a letra entrar cedo demais, aumente um pouco.
+    // Se entrar tarde, diminua um pouco.
+    const VOCAL_OFFSET = 0;
 
     const music = document.getElementById("music");
     const lines = [...document.querySelectorAll(".line")];
@@ -547,19 +550,21 @@
     const seek = document.getElementById("seek");
     const progressBar = document.getElementById("progressBar");
     const timeEl = document.getElementById("time");
-    const glow = document.getElementById("glow");
+    const orb = document.getElementById("orb");
 
     const canvas = document.getElementById("bg");
     const ctx = canvas.getContext("2d");
 
     let stars = [];
     let animationStarted = false;
+    let lastActiveLine = null;
 
     let audioCtx, analyser, sourceNode, freqData;
     let energy = 0;
 
     function setupAudio() {
       if (audioCtx) return;
+
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       analyser = audioCtx.createAnalyser();
       analyser.fftSize = 256;
@@ -573,9 +578,11 @@
     async function playMusic() {
       try {
         setupAudio();
+
         if (audioCtx.state === "suspended") {
           await audioCtx.resume();
         }
+
         await music.play();
         intro.classList.add("hidden");
         toggleBtn.textContent = "❚❚";
@@ -584,8 +591,8 @@
           animationStarted = true;
           animate();
         }
-      } catch (e) {
-        console.error(e);
+      } catch (err) {
+        console.error("Erro ao tocar música:", err);
       }
     }
 
@@ -601,19 +608,19 @@
     playMain.addEventListener("click", playMusic);
     toggleBtn.addEventListener("click", toggleMusic);
 
-    music.addEventListener("pause", () => {
-      toggleBtn.textContent = "▶";
-    });
-
     music.addEventListener("play", () => {
       toggleBtn.textContent = "❚❚";
+    });
+
+    music.addEventListener("pause", () => {
+      toggleBtn.textContent = "▶";
     });
 
     function formatTime(sec) {
       if (!isFinite(sec)) return "00:00";
       const m = Math.floor(sec / 60);
       const s = Math.floor(sec % 60);
-      return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+      return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
     }
 
     function getLyricTime() {
@@ -622,17 +629,34 @@
 
     function updateLyrics() {
       const lyricTime = getLyricTime();
+      let currentLine = null;
 
       lines.forEach(line => {
         const start = parseFloat(line.dataset.start);
         const end = parseFloat(line.dataset.end);
 
+        line.classList.remove("active", "exit", "emphasis");
+
         if (lyricTime >= start && lyricTime <= end) {
-          line.classList.add("active");
-        } else {
-          line.classList.remove("active");
+          currentLine = line;
+        } else if (lyricTime > end && lyricTime <= end + 0.45) {
+          line.classList.add("exit");
         }
       });
+
+      if (currentLine) {
+        currentLine.classList.add("active");
+
+        const start = parseFloat(currentLine.dataset.start);
+        const end = parseFloat(currentLine.dataset.end);
+        const middle = start + (end - start) / 2;
+
+        if (Math.abs(lyricTime - middle) < 0.8) {
+          currentLine.classList.add("emphasis");
+        }
+      }
+
+      lastActiveLine = currentLine;
     }
 
     function updateProgress() {
@@ -684,9 +708,11 @@
 
       analyser.getByteFrequencyData(freqData);
       let sum = 0;
+
       for (let i = 0; i < freqData.length; i++) {
         sum += freqData[i];
       }
+
       const avg = sum / freqData.length / 255;
       energy = energy * 0.88 + avg * 0.12;
     }
@@ -695,8 +721,8 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      grad.addColorStop(0, "rgba(6,10,18,.20)");
-      grad.addColorStop(1, "rgba(5,7,13,.65)");
+      grad.addColorStop(0, "rgba(8,12,24,.22)");
+      grad.addColorStop(1, "rgba(4,5,10,.72)");
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -715,19 +741,22 @@
         const k = canvas.width / s.z;
         const x = (s.x - cx) * k + cx;
         const y = (s.y - cy) * k + cy;
-        const radius = s.size * (1.2 - s.z / canvas.width) * 1.7;
+        const radius = s.size * (1.2 - s.z / canvas.width) * 1.6;
 
         if (x < -50 || x > canvas.width + 50 || y < -50 || y > canvas.height + 50) continue;
 
         ctx.beginPath();
-        ctx.fillStyle = `rgba(155,199,255,${0.12 + (1 - s.z / canvas.width) * 0.85})`;
-        ctx.arc(x, y, Math.max(.2, radius), 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(158,208,255,${0.14 + (1 - s.z / canvas.width) * 0.82})`;
+        ctx.arc(x, y, Math.max(0.2, radius), 0, Math.PI * 2);
         ctx.fill();
       }
 
-      const glowBg = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(canvas.width, canvas.height) * 0.4);
-      glowBg.addColorStop(0, `rgba(110,168,255,${0.05 + energy * 0.15})`);
-      glowBg.addColorStop(1, "rgba(110,168,255,0)");
+      const glowBg = ctx.createRadialGradient(
+        cx, cy, 0,
+        cx, cy, Math.max(canvas.width, canvas.height) * 0.4
+      );
+      glowBg.addColorStop(0, `rgba(114,169,255,${0.05 + energy * 0.16})`);
+      glowBg.addColorStop(1, "rgba(114,169,255,0)");
       ctx.fillStyle = glowBg;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
@@ -738,8 +767,8 @@
       updateLyrics();
       updateProgress();
 
-      glow.style.transform = `scale(${1 + energy * 0.45})`;
-      glow.style.opacity = 0.45 + energy * 0.55;
+      orb.style.transform = `scale(${1 + energy * 0.45})`;
+      orb.style.opacity = 0.42 + energy * 0.55;
 
       requestAnimationFrame(animate);
     }
@@ -748,6 +777,10 @@
     music.addEventListener("timeupdate", () => {
       updateLyrics();
       updateProgress();
+    });
+
+    music.addEventListener("ended", () => {
+      toggleBtn.textContent = "▶";
     });
 
     window.addEventListener("resize", resizeCanvas);
